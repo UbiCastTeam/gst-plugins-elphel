@@ -1,0 +1,6 @@
+
+The output is supposed to look like test/fruits.tiff
+
+Example command line:
+gst-launch-0.10 filesrc location=test/fruits.jp4 ! jpegdec ! bayer2rgb2 jp46-mode=true method=6 ! ffmpegcolorspace ! freeze ! ximagesink
+
