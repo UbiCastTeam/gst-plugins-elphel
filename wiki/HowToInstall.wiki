@@ -1,0 +1,17 @@
+You can download code source with svn and this link:
+* https://gst-plugins-elphel.googlecode.com/svn/trunk
+
+Installation for jp462bayer, you must to do the line command : 
+* ./autogen.sh
+* make
+* cp ~/src/gst-plugins-elphel/jp462bayer/src/.libs/libgstjp462bayer.so ~/.gstreamer-0.10/plugins$
+
+Installation for jp462bayer, you must to do the line command : 
+* ./autogen.sh
+* make
+* cp ~/src/gst-plugins-elphel/bayer2rgb2/src.libs/libgstbayer2rgb2.so ~/.gstreamer-0.10/plugins$
+
+Now you can to do gst-inspect :
+
+* gst-inspect bayer2rgb2
+* gst-inspect jp462bayer
