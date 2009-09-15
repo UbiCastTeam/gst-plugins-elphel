@@ -2,7 +2,7 @@
  * GStreamer
  * Copyright (C) 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
- * Copyright (C) 2009 Anthony Violo <<user@hostname.org>>
+ * Copyright (C) 2009 Anthony Violo <<anthony.violo@ubicast.eu>>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -117,10 +117,10 @@ gst_jp462bayer_base_init (gpointer gclass)
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
 
   gst_element_class_set_details_simple(element_class,
-    "JP462bayer",
-    "FIXME:Generic",
-    "FIXME:Generic Template Element",
-    "Anthony Violo <<user@hostname.org>>");
+    "JP46 to Bayer convertion filter",
+    "Filter/Effect/Video",
+    "Converts raw JP46 data to raw bayer data",
+    "Anthony Violo <anthony.violo@ubicast.eu>");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_factory));
@@ -309,10 +309,10 @@ GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     "jp462bayer",
-    "Template jp462bayer",
+    "Converts raw JP46 data to raw bayer data",
     jp462bayer_init,
     VERSION,
     "LGPL",
     "GStreamer",
-    "http://gstreamer.net/"
+    "http://www.ubicast.eu/"
 )
