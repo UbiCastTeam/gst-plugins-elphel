@@ -1,3 +1,7 @@
+#!/bin/env/python
+# -*- coding: utf-8 -*
+# Requires http://code.google.com/p/gstmanager/
+
 from gstmanager.event import EventListener 
 import sys
 
