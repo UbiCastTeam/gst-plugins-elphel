@@ -11,7 +11,7 @@ if __name__ == '__main__':
     import logging, sys
 
     logging.basicConfig(
-        level=getattr(logging, "DEBUG"),
+        level=getattr(logging, "INFO"),
         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
         stream=sys.stderr
     )
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     from gstmanager.gstmanager import PipelineManager
     output_caps = "video/x-raw-yuv, format=(fourcc)I420, width=(int)1920, height=(int)1088, framerate=(fraction)25/1"
 
-    pipeline_desc = 'rtspsrc location=rtsp://192.168.1.9:554 protocols=0x00000001 latency=10 ! queue ! rtpjpegdepay ! jpegdec ! videorate name=videorate ! %s !  queue ! xvimagesink max-lateness=-1 sync=false' %output_caps
+    pipeline_desc = 'rtspsrc location=rtsp://192.168.1.9:554 protocols=0x00000001 latency=0 ! queue ! rtpjpegdepay ! jpegdec ! videorate name=videorate ! %s !  queue ! xvimagesink max-lateness=-1' %output_caps
 
     pipelinel = PipelineManager(pipeline_desc)
     pipelinel.run()
