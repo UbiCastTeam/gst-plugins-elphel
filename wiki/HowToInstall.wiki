@@ -1,17 +1,35 @@
-You can download code source with svn and this link:
-* https://gst-plugins-elphel.googlecode.com/svn/trunk
+= Requirements =
 
-Installation for jp462bayer, you must to do the line command : 
-* ./autogen.sh
-* make
-* cp ~/src/gst-plugins-elphel/jp462bayer/src/.libs/libgstjp462bayer.so ~/.gstreamer-0.10/plugins$
+Tested on Ubuntu 8.10
 
-Installation for jp462bayer, you must to do the line command : 
-* ./autogen.sh
-* make
-* cp ~/src/gst-plugins-elphel/bayer2rgb2/src.libs/libgstbayer2rgb2.so ~/.gstreamer-0.10/plugins$
+To compile, additionally to the basic development tools (from build-essential), you will need (from apt on Ubuntu/Debian systems):
+  * libgstreamer-plugins-base0.10-dev
+  * libgstreamer0.10-dev
 
-Now you can to do gst-inspect :
+= Get the source =
+
+svn checkout http://gst-plugins-elphel.googlecode.com/svn/trunk/ gst-plugins-elphel
+
+= Compilation =
+== jp462bayer ==
+
+From your gst-plugins-elphel directory:
+  * cd jp462bayer
+  * ./autogen.sh
+  * make
+  * cp ~/src/gst-plugins-elphel/jp462bayer/src/.libs/libgstjp462bayer.so ~/.gstreamer-0.10/plugins$
+
+== bayer2rgb2 == 
+
+From your gst-plugins-elphel directory:
+  * cd bayer2rgb2
+  * ./autogen.sh
+  * make
+  * cp ~/src/gst-plugins-elphel/bayer2rgb2/src.libs/libgstbayer2rgb2.so ~/.gstreamer-0.10/plugins$
+
+= Checking =
+
+Now you can use gst-inspect to verify the plugins have been built and installed successfully:
 
 * gst-inspect bayer2rgb2
 * gst-inspect jp462bayer
