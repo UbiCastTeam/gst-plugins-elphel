@@ -17,7 +17,7 @@ From your gst-plugins-elphel directory:
   * cd jp462bayer
   * ./autogen.sh
   * make
-  * cp ~/src/gst-plugins-elphel/jp462bayer/src/.libs/libgstjp462bayer.so ~/.gstreamer-0.10/plugins$
+  * cp src/.libs/libgstjp462bayer.so ~/.gstreamer-0.10/plugins$
 
 == bayer2rgb2 == 
 
@@ -25,7 +25,7 @@ From your gst-plugins-elphel directory:
   * cd bayer2rgb2
   * ./autogen.sh
   * make
-  * cp ~/src/gst-plugins-elphel/bayer2rgb2/src.libs/libgstbayer2rgb2.so ~/.gstreamer-0.10/plugins$
+  * cp /src.libs/libgstbayer2rgb2.so ~/.gstreamer-0.10/plugins$
 
 = Checking =
 
