@@ -279,6 +279,7 @@ gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *ou
       outbuf->data[(i / (256 * filter->width / 16)) * 256 * filter->width / 16 +
 		  (ord % 16) * filter->width + abs] = inbuf->data[i];
     }
+  outbuf->size = filter->width * filter->height;
   return  GST_FLOW_OK;
 }
 
