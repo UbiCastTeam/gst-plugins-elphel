@@ -1,10 +1,11 @@
 from gstmanager.event import EventListener 
 
 def get_numbers(pipelinel):
-    drop = pipelinel.get_property_on_element(element_name="videorate", property_name="drop")
-    duplicate = pipelinel.get_property_on_element(element_name="videorate", property_name="duplicate")
+    if pipelinel.get_state() == "GST_STATE_PLAYING":
+        drop = pipelinel.get_property_on_element(element_name="videorate", property_name="drop")
+        duplicate = pipelinel.get_property_on_element(element_name="videorate", property_name="duplicate")
  
-    print "Dropped frames: %s Duplicated frames: %s" %(drop, duplicate)
+        print "Dropped frames: %s Duplicated frames: %s" %(drop, duplicate)
     return True
 
 if __name__ == '__main__':
