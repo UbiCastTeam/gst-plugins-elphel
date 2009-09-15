@@ -209,7 +209,7 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
   int width;
   int height;
   int pixsize;
-  int i;
+  int i = 0;
   const char *name;
 
   structure = gst_caps_get_structure (caps, 0);
@@ -219,24 +219,28 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
       name = gst_structure_get_name (structure);
       if (strcmp (name, "ANY")) 
 	{
-	  for (i = 0; size[i]; i++)
-	    *size = GST_ROUND_UP_4 (width) * height * 1.5;
+	  if (size[i])
+	    for (i = 0; size[i]; i++)
+	      *size = width * height * 1.5;
+	  else
+	    size[0] = GST_ROUND_UP_4 (width) * height * 1.5;
 	  return TRUE;
 	}
       else
 	{
 	  if (gst_structure_get_int (structure, "bpp", &pixsize)) 
 	    {
-	      *size = width * height;
+	      *size = width * height * 1.5;
 	      return TRUE;
 	    }
 	}
-      
     }
   GST_ELEMENT_ERROR (base, CORE, NEGOTIATION, (NULL),
 		     ("Incomplete caps, some required field missing"));
   return FALSE;
 }
+
+
 
 static gboolean
 gst_jp462bayer_set_caps (GstBaseTransform *pad, GstCaps * incaps, GstCaps * outcaps)
@@ -261,7 +265,7 @@ gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *ou
   guint32		abs;
   guint32		ord;
   int			i;
-  
+
   filter = GST_JP462BAYER(pad);
   if (filter->height < 8 || filter->width < 8 || filter->width % 16 != 0 || filter->height % 16 != 0)
     {
@@ -279,7 +283,7 @@ gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *ou
       outbuf->data[(i / (256 * filter->width / 16)) * 256 * filter->width / 16 +
 		  (ord % 16) * filter->width + abs] = inbuf->data[i];
     }
-  outbuf->size = filter->width * filter->height;
+  outbuf->size = filter->width * filter->height * 1.5;
   return  GST_FLOW_OK;
 }
 
