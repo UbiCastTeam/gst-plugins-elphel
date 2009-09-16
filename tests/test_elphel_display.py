@@ -22,10 +22,12 @@ if __name__ == '__main__':
         stream=sys.stderr
     )
 
+    ip = "192.168.0.9"
+
     from gstmanager.gstmanager import PipelineManager
     output_caps = "video/x-raw-yuv, format=(fourcc)I420, width=(int)1920, height=(int)1088, framerate=(fraction)25/1"
 
-    pipeline_desc = 'rtspsrc location=rtsp://192.168.1.9:554 protocols=0x00000001 latency=0 ! queue ! rtpjpegdepay ! jpegdec ! videorate name=videorate ! %s !  queue ! xvimagesink max-lateness=-1' %output_caps
+    pipeline_desc = 'rtspsrc location=rtsp://%s:554 protocols=0x00000001 latency=0 ! queue ! rtpjpegdepay ! jpegdec ! videorate name=videorate ! %s !  queue ! xvimagesink max-lateness=-1' %(ip, output_caps)
 
     pipelinel = PipelineManager(pipeline_desc)
     pipelinel.run()
