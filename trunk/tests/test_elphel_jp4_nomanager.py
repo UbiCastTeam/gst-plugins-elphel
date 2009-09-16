@@ -1,3 +1,6 @@
+# Copyright (C) 2008  Florent Thiery <florent.thiery@ubicast.eu>
+# Released under the terms of the LGPL
+
 import os
 os.environ["GST_DEBUG"]="3"
 import gst
