@@ -33,18 +33,25 @@ class StatsGetter(object):
         return True
 
 if __name__ == '__main__':
-    import logging
 
+    ip = "192.168.0.9"
+    #ip = "192.168.1.9"
+
+    import logging
     logging.basicConfig(
         level=getattr(logging, "INFO"),
         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
         stream=sys.stderr
     )
 
-    mode = "jp46"
+    from get_status import ElphelColorStatus
+    e = ElphelColorStatus(ip)
+    mode = e.get_image_mode()
+
+    #mode = "jp46"
     #mode = "color"
+
     method = "0"
-    ip = "192.168.0.9"
 
     if mode == "jp46":
         supposed_framerate = 30
