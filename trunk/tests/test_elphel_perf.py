@@ -40,8 +40,9 @@ if __name__ == '__main__':
     )
 
     mode = "jp46"
-    method = "0"
     #mode = "color"
+    method = "0"
+    ip = "192.168.0.9"
 
     if mode == "jp46":
         supposed_framerate = 30
@@ -52,9 +53,9 @@ if __name__ == '__main__':
     output_caps = "video/x-raw-yuv, format=(fourcc)I420, width=(int)1920, height=(int)1088, framerate=(fraction)%s/1" %supposed_framerate
 
     if mode == "color":
-        pipeline_desc = 'rtspsrc location=rtsp://192.168.1.9:554 protocols=0x00000001 latency=0 ! queue ! rtpjpegdepay ! jpegdec ! videorate name=videorate ! %s !  queue ! xvimagesink max-lateness=-1' %output_caps
+        pipeline_desc = 'rtspsrc location=rtsp://%s:554 protocols=0x00000001 latency=0 ! queue ! rtpjpegdepay ! jpegdec ! videorate name=videorate ! %s !  queue ! xvimagesink max-lateness=-1' %(ip, output_caps)
     elif mode == "jp46":
-        pipeline_desc = 'rtspsrc location=rtsp://192.168.1.9:554 protocols=0x00000001 latency=0 ! rtpjpegdepay ! jpegdec ! queue leaky=2 ! jp462bayer ! queue leaky=2 ! bayer2rgb2 method=%s ! queue ! ffmpegcolorspace ! videorate name=videorate ! %s !  queue ! xvimagesink max-lateness=-1 sync=false' %(method, output_caps)
+        pipeline_desc = 'rtspsrc location=rtsp://%s:554 protocols=0x00000001 latency=0 ! rtpjpegdepay ! jpegdec ! queue leaky=2 ! jp462bayer ! queue leaky=2 ! bayer2rgb2 method=%s ! queue ! ffmpegcolorspace ! videorate name=videorate ! %s !  queue ! xvimagesink max-lateness=-1 sync=false' %(ip, method, output_caps)
 
     import gobject
     pipelinel = PipelineManager(pipeline_desc)
