@@ -1,6 +1,8 @@
 #!/bin/env/python
 # -*- coding: utf-8 -*
 # Requires http://code.google.com/p/gstmanager/
+# Copyright (C) 2008  Florent Thiery <florent.thiery@ubicast.eu>
+# Released under the terms of the LGPL
 
 from gstmanager.event import EventListener 
 
