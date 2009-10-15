@@ -2,10 +2,10 @@
  * GStreamer
  * Copyright (C) 2009 Anthony Violo <anthony.violo@ubicast.eu>
  * Bayer pattern decoding functions from libdc1394 project
- * ("http://damien.douxchamps.net/ieee1394/libdc1394/"), written by 
- * Damien Douxchamps and Frederic Devernay; the original VNG and AHD Bayer 
+ * ("http://damien.douxchamps.net/ieee1394/libdc1394/"), written by
+ * Damien Douxchamps and Frederic Devernay; the original VNG and AHD Bayer
  * decoding are from Dave Coffin's DCRAW.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -56,8 +56,8 @@
  * gst-launch-0.10 filesrc location=test/fruits.jp4 ! jpegdec ! bayer2rgb2 jp46-mode=true method=6 ! ffmpegcolorspace ! freeze ! ximagesink
  * ]|
  * |[
- * gst-launch-0.10 rtspsrc location=rtsp://192.168.1.9:554 protocols=0x00000001 ! rtpjpegdepay ! jpegdec ! queue ! jp462bayer 
- * ! queue ! bayer2rgb2 ! queue ! ffmpegcolorspace ! videorate ! "video/x-raw-yuv, format=(fourcc)I420, width=(int)1920, 
+ * gst-launch-0.10 rtspsrc location=rtsp://192.168.1.9:554 protocols=0x00000001 ! rtpjpegdepay ! jpegdec ! queue ! jp462bayer
+ * ! queue ! bayer2rgb2 ! queue ! ffmpegcolorspace ! videorate ! "video/x-raw-yuv, format=(fourcc)I420, width=(int)1920,
  * height=(int)1088, framerate=(fraction)25/1" ! xvimagesink sync=false max-lateness=-1 -v
  * </refsect2>
  */
@@ -111,7 +111,7 @@ enum
   };
 
 static const GstElementDetails gst_alpha_color_details =
-GST_ELEMENT_DETAILS 
+GST_ELEMENT_DETAILS
   (
    "Bayer to RGB conversion filter",
    "Filter/Effect/Video",
@@ -119,7 +119,7 @@ GST_ELEMENT_DETAILS
    "Anthony Violo <anthony.violo@ubicast.eu>"
    );
 
-static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE 
+static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE
   ("sink",
    GST_PAD_SINK,
    GST_PAD_ALWAYS,
@@ -163,16 +163,16 @@ gst_methode_pattern_get_type (int flag)
 
   if (!flag)
     {
-      if (!methode_pattern_type) 
+      if (!methode_pattern_type)
 	{
-	  static GEnumValue pattern_types[] = 
+	  static GEnumValue pattern_types[] =
 	    {
 	      { NEAREST, "Nearest", "Nearest" },
 	      { SIMPLE,  "Simple",  "Simple" },
 	      { BILINEAR, "Bilinear", "Bilinear" },
 	      { HQLINEAR, "Hqlinear", "Hqlinear" },
 	      { DOWNSAMPLE, "Downsample", "Downsample" },
-	      { EDGESENSE, "Edgesense", "Edgesense" }, 
+	      { EDGESENSE, "Edgesense", "Edgesense" },
 	      { VNG, "Vng", "Vng" },
 	      { AHD, "Ahd", "Ahd" },
 	      {0, NULL, NULL },
@@ -183,9 +183,9 @@ gst_methode_pattern_get_type (int flag)
 	}
       return methode_pattern_type;
     }
-  if (!pixel_pattern_type) 
+  if (!pixel_pattern_type)
     {
-      static GEnumValue pixel_types[] = 
+      static GEnumValue pixel_types[] =
 	{
 	  { RGGB, "RGGB", "RGGB" },
 	  { GBRG, "GBRG", "GBRG" },
@@ -206,8 +206,8 @@ gst_bayer2rgb2_base_init (gpointer gclass)
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
 
   gst_element_class_set_details(element_class, &gst_alpha_color_details);
- 
-  gst_element_class_add_pad_template(element_class, 
+
+  gst_element_class_add_pad_template(element_class,
      gst_static_pad_template_get (&sink_factory));
   gst_element_class_add_pad_template (element_class,
      gst_static_pad_template_get (&src_factory));
@@ -221,10 +221,10 @@ gst_bayer2rgb2_class_init (GstBayer2rgb2Class * klass)
   GstBaseTransformClass *gstbasetransform_class;
 
   gobject_class = (GObjectClass *) klass;
-  
+
   gstelement_class = (GstElementClass *) klass;
   gstbasetransform_class = (GstBaseTransformClass *) klass;
- 
+
   gobject_class->set_property = gst_bayer2rgb2_set_property;
   gobject_class->get_property = gst_bayer2rgb2_get_property;
 
@@ -242,24 +242,24 @@ gst_bayer2rgb2_class_init (GstBayer2rgb2Class * klass)
 
   g_object_class_install_property
     (gobject_class, PROP_BPP,
-     g_param_spec_boolean 
+     g_param_spec_boolean
      ("bpp", "Bpp", "Bits per pixel (needed with raw sensor data): \n\t\t        FALSE = 8 bpp, TRUE = 16 bpp.",
       FALSE, G_PARAM_READWRITE));
-  
+
   g_object_class_install_property
     (gobject_class, PROP_METHODE,
-     g_param_spec_enum 
+     g_param_spec_enum
      ("method", "Method",
       "Demosaicing interpolation algorithm",
       gst_methode_pattern_get_type(0), 1, G_PARAM_READWRITE));
 
    g_object_class_install_property
     (gobject_class, PROP_FIRSTPIXEL,
-     g_param_spec_enum 
+     g_param_spec_enum
      ("pixel-order", "Pixel-order",
       "Pixel ordering template",
       gst_methode_pattern_get_type(1), 2, G_PARAM_READWRITE));
-   
+
    GST_DEBUG_CATEGORY_INIT (gst_bayer2rgb2_debug, "bayer2rgb2", 0,
 			    "YUV->RGB");
 }
@@ -290,10 +290,10 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
 
   structure = gst_caps_get_structure (caps, 0);
   if (gst_structure_get_int (structure, "width", &width) &&
-      gst_structure_get_int (structure, "height", &height)) 
+      gst_structure_get_int (structure, "height", &height))
     {
       name = gst_structure_get_name (structure);
-      if (strcmp (name, "video/x-raw-rgb")) 
+      if (strcmp (name, "video/x-raw-rgb"))
 	{
 	  for (i = 0; size[i]; i++)
 	    *size = GST_ROUND_UP_4 (width) * height * 1.5;
@@ -301,20 +301,19 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
 	}
       else
 	{
-	  if (gst_structure_get_int (structure, "bpp", &pixsize)) 
+	  if (gst_structure_get_int (structure, "bpp", &pixsize))
 	    {
 	      *size = width * height * (pixsize / 8);
 	      return TRUE;
 	    }
 	}
-      
     }
   GST_ELEMENT_ERROR (base, CORE, NEGOTIATION, (NULL),
 		     ("Incomplete caps, some required field missing"));
   return FALSE;
 }
 
-static GstCaps *gst_bayer2rgb2_transform_caps 
+static GstCaps *gst_bayer2rgb2_transform_caps
 (GstBaseTransform * btrans, GstPadDirection direction, GstCaps * caps)
 {
   GstStructure *structure;
@@ -363,7 +362,7 @@ static gboolean gst_bayer2rgb2_set_caps
   gst_structure_get_int (structure, "green_mask", &val);
   gst_structure_get_int (structure, "blue_mask", &val);
   ret &= gst_structure_get_int (structure, "depth", &depth);
-  if (!ret || val == 0 || depth != 24 || bpp != 24) 
+  if (!ret || val == 0 || depth != 24 || bpp != 24)
     {
       GST_DEBUG_OBJECT (alpha, "incomplete or non-RGB input caps");
       return FALSE;
@@ -429,17 +428,17 @@ gst_bayer2rgb2_get_property (GObject * object, guint prop_id,
   }
 }
 
-uint8_t	*bayer2rgb2(GstBayer2rgb2 *filter, uint8_t *output)
+uint8_t	*bayer2rgb2(GstBayer2rgb2 *filter, uint8_t *input, uint8_t *output)
 {
   uint32_t	bpp = 0;
   uint32_t	in_size = 0;
-  
+
   bpp = filter->bpp ? 16 : 8;
   in_size = filter->width * filter->height;
   switch(bpp)
     {
     case 8:
-      dc1394_bayer_decoding_8bit(filter->tmp, output, filter->width, filter->height, filter->pixel, filter->methode);
+      dc1394_bayer_decoding_8bit(input, output, filter->width, filter->height, filter->pixel, filter->methode);
       break;
     case 16:
     default:
@@ -448,32 +447,27 @@ uint8_t	*bayer2rgb2(GstBayer2rgb2 *filter, uint8_t *output)
 	uint32_t	i = 0;
 	for(i = 0; i < in_size; i += 2)
 	  {
-	    tmp = *(((uint8_t*)filter->tmp) + i);
-	    *(((uint8_t*)filter->tmp) + i) = *(((uint8_t*)filter->tmp) + i + 1);
-	    *(((uint8_t*)filter->tmp) + i + 1) = tmp;
+	    tmp = *(((uint8_t*)input) + i);
+	    *(((uint8_t*)input) + i) = *(((uint8_t*)input) + i + 1);
+	    *(((uint8_t*)input) + i + 1) = tmp;
 	  }
       }
-      dc1394_bayer_decoding_16bit((const uint16_t*)filter->tmp, (uint16_t*)output, filter->width, filter->height, filter->pixel, filter->methode, 16);
+      dc1394_bayer_decoding_16bit((const uint16_t*)input, (uint16_t*)output, filter->width, filter->height, filter->pixel, filter->methode, 16);
       break;
     }
   return output;
 }
-  
+
 static GstFlowReturn
 gst_bayer2rgb2_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *outbuf)
 {
   GstBayer2rgb2		*filter;
-  uint8_t		*input; 
+  uint8_t		*input;
   uint8_t		*output;
-  int			i;
 
   filter = GST_BAYER2RGB2(pad);
   input = (uint8_t *) GST_BUFFER_DATA (inbuf);
   output = (uint8_t *) GST_BUFFER_DATA (outbuf);
-  if (!(filter->tmp = malloc(1 + filter->width * filter->height * (sizeof(*filter->tmp)))))
-    return GST_FLOW_NOT_LINKED;
-  for (i = 0; i < filter->width * filter->height; i++)
-    filter->tmp[i] = input[i];
   if (filter->pixel == 0)
     filter->pixel = (guint16) DC1394_COLOR_FILTER_RGGB;
   if (filter->pixel == 1)
@@ -483,8 +477,7 @@ gst_bayer2rgb2_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *ou
   if (filter->pixel == 3)
     filter->pixel = (guint16) DC1394_COLOR_FILTER_BGGR;
   if (filter->height > 8 && filter->width > 8)
-    output = bayer2rgb2(filter, output);
-  g_free(filter->tmp);
+    output = bayer2rgb2(filter, input, output);
   return GST_FLOW_OK;
 }
 
