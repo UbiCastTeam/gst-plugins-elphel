@@ -2,7 +2,8 @@
  * GStreamer
  * Copyright (C) 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
- * Copyright (C) 2009 Anthony Violo <<anthony.violo@ubicast.eu>>
+ * Copyright (C) 2009 Anthony Violo <anthony.violo@ubicast.eu>
+ * Copyright (C) 2009 Konstantin Kim <kimstik@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -240,8 +241,6 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
   return FALSE;
 }
 
-
-
 static gboolean
 gst_jp462bayer_set_caps (GstBaseTransform *pad, GstCaps * incaps, GstCaps * outcaps)
 {
@@ -262,63 +261,23 @@ static GstFlowReturn
 gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *outbuf)
 {
   GstJP462bayer		*filter;
-  /*
-  guint32		abs;
-  guint32		ord;
-  int			i;
-  */
-  filter = GST_JP462BAYER(pad);
-  /*
-  if (filter->height < 8 || filter->width < 8 || filter->width % 16 != 0 || filter->height % 16 != 0)
-    {
-      GST_DEBUG_OBJECT(filter, "Size of image must be at least 8x8 and an multiple of 16", gst_flow_get_name(GST_FLOW_NOT_LINKED));
-      return GST_FLOW_NOT_LINKED;
-    }
-  for (i = 0; i < filter->width * filter->height; i++)
-    {
-      abs = ((i % (16 * filter->width / 16)) % 16) < 8 ?
-	((((i % (16 * filter->width / 16)) % 16) * 2) + 16 * ((i % (16 * filter->width / 16)) / 16)) :
-	(((((i % (16 * filter->width / 16)) % 16) % 8 * 2) + 1 ) + 16 * ((i % (16 * filter->width / 16)) / 16));
-      ord = ((i / (16 * filter->width / 16)) % 16) < 8 ?
-	((((i / (16 * filter->width / 16)) % 16) * 2) + 16 * (i / (256 * filter->width / 16))) :
-	(((((i / (16 * filter->width / 16)) % 16) % 8 * 2) + 1 ) + 16 * (i / (256 * filter->width / 16)));
-      outbuf->data[(i / (256 * filter->width / 16)) * 256 * filter->width / 16 +
-		  (ord % 16) * filter->width + abs] = inbuf->data[i];
-    }
-  outbuf->size = filter->width * filter->height * 1.5;
-  */
-  guint32 y, x;
-  guint32 b_of = 0;
-  guint32 h_of;
-  guint8  buff[16][16];
+  guint32		y, x;
+  guint32		b_of = 0;
+  guint32		h_of;
+  guint8		buff[16][16];
+  uint32_t		i,j;
 
-  for (y = 0; y < filter->height; y += 16)
-    {
-      // modified bayer -> original bayer
-      for (x = 0; x < filter->width; x += 16)
-	{
-	  uint32_t i, j;
-	  h_of = 0;
-	  for (j = 0; j < 16; ++j)
-	    {
-	      for (i = 0; i < 16; ++i)
-		{
-		  buff[((j << 1) | (j >> 3)) & 0x0f][((i << 1) | (i >> 3)) & 0x0f] = inbuf->data[x + i + h_of + b_of];
-		}
-	      h_of += filter->width;
-	    }
-	  h_of = 0;
-	  for (j = 0; j < 16; ++j)
-	    {
-	      for (i = 0; i < 16; ++i)
-		{
-		  outbuf->data[x + i + h_of + b_of] = buff[j][i];
-		}
-	      h_of += filter->width;
-	    }
-	}
-      b_of += filter->width << 4;
-    }
+  filter = GST_JP462BAYER(pad);
+  for (y = 0; y < filter->height; y += 16, b_of += filter->width<<4)
+    for (x = 0; x < filter->width; x += 16)
+      {
+	for (j = 0,  h_of = 0; j < 16; ++j, h_of += filter->width)
+	  for (i = 0; i < 16; ++i)
+	    buff[((j<<1)|(j>>3))&0x0f][((i<<1)|(i>>3))&0x0f] = inbuf->data[x+i + h_of + b_of];
+	for (j = 0, h_of = 0; j < 16; ++j, h_of += filter->width)
+	  for (i = 0; i < 16; ++i)
+	    outbuf->data[x+i + h_of + b_of] = buff[j][i];
+      }
   return  GST_FLOW_OK;
 }
 
