@@ -4,6 +4,7 @@
  * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
  * Copyright (C) 2009 Anthony Violo <anthony.violo@ubicast.eu>
  * Copyright (C) 2009 Konstantin Kim <kimstik@gmail.com>
+ * Copyright (C) 2009 Deschenaux Luc <luc.deschenaux.mta@sunrise.ch>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -264,20 +265,18 @@ gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *ou
   guint32		y, x;
   guint32		b_of = 0;
   guint32		h_of;
-  guint8		buff[16][16];
-  uint32_t		i,j;
+  uint32_t		i, j;
+  guint32		index1[16]={0,8,1,9,2,10,3,11,4,12,5,13,6,14,7,15};
+  guint32		index2[16];
 
   filter = GST_JP462BAYER(pad);
-  for (y = 0; y < filter->height; y += 16, b_of += filter->width<<4)
+  for (j = 0;j < 16; ++j)
+    index2[j] = index1[j] * filter->width;
+  for (y = 0; y < filter->height; y += 16, b_of += filter->width << 4)
     for (x = 0; x < filter->width; x += 16)
-      {
-	for (j = 0,  h_of = 0; j < 16; ++j, h_of += filter->width)
-	  for (i = 0; i < 16; ++i)
-	    buff[((j<<1)|(j>>3))&0x0f][((i<<1)|(i>>3))&0x0f] = inbuf->data[x+i + h_of + b_of];
-	for (j = 0, h_of = 0; j < 16; ++j, h_of += filter->width)
-	  for (i = 0; i < 16; ++i)
-	    outbuf->data[x+i + h_of + b_of] = buff[j][i];
-      }
+      for (j = 0, h_of = 0; j < 16; ++j, h_of += filter->width)
+	for (i = 0; i < 16; ++i)
+	  outbuf->data[x + i + h_of + b_of] = inbuf->data[x + index1[i] + index2[j] + b_of];
   return  GST_FLOW_OK;
 }
 
