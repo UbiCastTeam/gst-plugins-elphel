@@ -295,6 +295,8 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
       name = gst_structure_get_name (structure);
       if (strcmp (name, "video/x-raw-rgb"))
 	{
+	  if (!size[0])
+	    size[0] = width * height * 1.5;
 	  for (i = 0; size[i]; i++)
 	    *size = GST_ROUND_UP_4 (width) * height * 1.5;
 	  return TRUE;
