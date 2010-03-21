@@ -2,7 +2,7 @@
 
 Tested on Ubuntu 8.10
 
-To compile, additionally to the basic development tools (from build-essential), you will need (from apt on Ubuntu/Debian systems):
+To compile, additionally to the basic development tools (from build-essential, automake, autoconf, libtool), you will need (from apt on Ubuntu/Debian systems):
   * libgstreamer-plugins-base0.10-dev
   * libgstreamer0.10-dev
 
@@ -31,5 +31,5 @@ From your gst-plugins-elphel directory:
 
 Now you can use gst-inspect to verify the plugins have been built and installed successfully:
 
-* gst-inspect bayer2rgb2
-* gst-inspect jp462bayer
+  * gst-inspect bayer2rgb2
+  * gst-inspect jp462bayer
