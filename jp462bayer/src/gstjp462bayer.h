@@ -3,7 +3,7 @@
  * Copyright (C) 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
  * Copyright (C) 2009 Anthony Violo <<user@hostname.org>>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -47,9 +47,13 @@
 #define __GST_JP462BAYER_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstbasetransform.h>
+#include <gst/video/video.h>
+#include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
+
+GST_DEBUG_CATEGORY_STATIC (gst_jp462bayer_debug);
+#define GST_CAT_DEFAULT gst_jp462bayer_debug
 
 /* #defines don't like whitespacey bits */
 #define GST_TYPE_JP462BAYER \
@@ -68,17 +72,19 @@ typedef struct _GstJP462bayerClass GstJP462bayerClass;
 
 struct _GstJP462bayer
 {
-  GstBaseTransform	element;
-  guint16		width;
-  guint16		height;
-  GstPad		*sinkpad, *srcpad;
-  gboolean		silent;
-  
+	GstVideoFilter element;
+  	guint16						width;
+  	guint16						height;
+  	GstPad						*sinkpad, *srcpad;
+  	gboolean					silent;
+ 	guint8						size;
+	guint32						index1[16];
+	guint32						index2[16];
 };
 
-struct _GstJP462bayerClass 
+struct _GstJP462bayerClass
 {
-  GstBaseTransformClass parent_class;
+	GstVideoFilterClass parent_class;
 };
 
 GType gst_jp462bayer_get_type (void);
@@ -86,3 +92,4 @@ GType gst_jp462bayer_get_type (void);
 G_END_DECLS
 
 #endif /* __GST_JP462BAYER_H__ */
+
