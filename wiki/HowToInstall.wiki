@@ -33,3 +33,12 @@ Now you can use gst-inspect to verify the plugins have been built and installed 
 
   * gst-inspect bayer2rgb2
   * gst-inspect jp462bayer
+
+
+If gst-inspect doesn't find the new plugins delete the plugin registry at 
+
+{{{ ~/.gstreamer-0.10/registry.* }}}
+
+It will be recreated with updated index when doing:
+   * gst-inspect bayer2rgb2
+  * gst-inspect jp462bayer
