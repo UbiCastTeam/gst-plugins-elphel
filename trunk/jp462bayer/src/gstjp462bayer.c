@@ -48,12 +48,14 @@
 /**
  * SECTION:element-jp462bayer
  *
- * FIXME:Describe jp462bayer here.
+ * This plugin lets you convert raw JP46 frames from Elphel cameras to Bayer data.
+ * For information about JP4 and demosaicing, see WhyJP4: http://code.google.com/p/gst-plugins-elphel/wiki/WhyJP4
  *
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch -v -m fakesrc ! jp462bayer ! fakesink silent=TRUE
+ * gst-launch-0.10 filesrc location=jp46test.mkv ! decodebin ! ffmpegcolorspace !
+ * queue ! jp462bayer threads=2 ! queue ! bayer2rgb2 ! queue ! ffmpegcolorspace ! xvimagesink
  * ]|
  * </refsect2>
  */
@@ -62,53 +64,60 @@
 #  include <config.h>
 #endif
 
+#define SRC_CAPS "video/x-raw-bayer,format=(string){gbrg, bggr, grbg, rggb}," \
+  "width=(int)[1,MAX],height=(int)[1,MAX],framerate=(fraction)[0/1,MAX]"
+
+#define _GNU_SOURCE
+#include <sched.h>
 #include <gst/gst.h>
-#include <gst/video/video.h>
 #include <string.h>
 #include <stdint.h>
+#include <pthread.h>
 #include "gstjp462bayer.h"
-
-/* Filter signals and args */
-enum
-{
-  /* FILL ME */
-  LAST_SIGNAL
-};
 
 enum
 {
 	PROP_0,
-	PROP_SILENT,
+    PROP_THREADS,
 };
 
 /* the capabilities of the inputs and outputs.
  *
  * describe the real formats here.
  */
+
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("ANY")
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("I420") "; ")
     );
 
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("ANY")
+    GST_STATIC_CAPS (SRC_CAPS)
     );
 
-GST_BOILERPLATE (GstJP462bayer, gst_jp462bayer, GstBaseTransform,
-    GST_TYPE_BASE_TRANSFORM);
+static void gst_jp462bayer_base_init (gpointer gclass);
+static void gst_jp462bayer_class_init (GstJP462bayerClass * klass);
+static void gst_jp462bayer_init (GstJP462bayer *filter,GstJP462bayerClass *gclass);
+static void gst_jp462bayer_finalize (GstJP462bayer * jp462bayer);
+
+static gboolean gst_jp462bayer_get_unit_size (GstBaseTransform * base, GstCaps * caps, guint * size);
+static GstCaps *gst_jp462bayer_transform_caps(GstBaseTransform * trans, GstPadDirection direction, GstCaps * caps);
+static gboolean gst_jp462bayer_set_caps (GstBaseTransform * btrans, GstCaps * incaps, GstCaps * outcaps);
+static GstFlowReturn gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *outbuf);
+
+
+void init_thread(t_thread **thread, int num_thread, GstJP462bayer* filter, int start_hor, int start_vert);
 
 static void gst_jp462bayer_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_jp462bayer_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-static gboolean gst_jp462bayer_set_caps (GstBaseTransform * btrans, GstCaps * incaps, GstCaps * outcaps);
-static GstFlowReturn gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *outbuf);
-static gboolean gst_jp462bayer_get_unit_size (GstBaseTransform * base, GstCaps * caps, guint * size);
-static GstCaps *gst_jp462bayer_transform_caps(GstBaseTransform * trans, GstPadDirection direction, GstCaps * caps);
+GST_BOILERPLATE (GstJP462bayer, gst_jp462bayer, GstBaseTransform,
+    GST_TYPE_BASE_TRANSFORM);
 
 /* GObject vmethod implementations */
 
@@ -118,12 +127,12 @@ gst_jp462bayer_base_init (gpointer gclass)
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
 
   gst_element_class_set_details_simple(element_class,
-    "JP46 to Bayer convertion filter",
+    "JP46 to Bayer conversion filter",
     "Filter/Effect/Video",
-    "Converts raw JP46 data to raw bayer data",
+    "Converts raw JP46 data from Elphel cameras to raw Bayer data",
     "Anthony Violo <anthony.violo@ubicast.eu>");
 
-  gst_element_class_add_pad_template (element_class,
+    gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory));
@@ -133,95 +142,117 @@ gst_jp462bayer_base_init (gpointer gclass)
 static void
 gst_jp462bayer_class_init (GstJP462bayerClass * klass)
 {
-  GObjectClass		*gobject_class;
-  GstElementClass	*gstelement_class;
-  GstBaseTransformClass *trans_class;
+    GObjectClass *gobject_class = (GObjectClass *) klass;
+    GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
 
-  gobject_class = (GObjectClass *) klass;
+    gobject_class->finalize = (GObjectFinalizeFunc) gst_jp462bayer_finalize;
+    gobject_class->set_property = gst_jp462bayer_set_property;
+    gobject_class->get_property = gst_jp462bayer_get_property;
 
-  gstelement_class = (GstElementClass *) klass;
-  trans_class = (GstBaseTransformClass *) klass;
+    g_object_class_install_property (gobject_class,
+      PROP_THREADS, g_param_spec_int ("threads", "threads", "Number of threads used by the plugin  (0 for automatic)", 0,
+	  4, 1, G_PARAM_READWRITE));
 
-  gobject_class->set_property = gst_jp462bayer_set_property;
-  gobject_class->get_property = gst_jp462bayer_get_property;
+    trans_class->transform_caps = GST_DEBUG_FUNCPTR (gst_jp462bayer_transform_caps);
 
-	trans_class->transform_caps = GST_DEBUG_FUNCPTR (gst_jp462bayer_transform_caps);
+    trans_class->get_unit_size =
+        GST_DEBUG_FUNCPTR (gst_jp462bayer_get_unit_size);
 
-  trans_class->get_unit_size =
-    GST_DEBUG_FUNCPTR (gst_jp462bayer_get_unit_size);
+    trans_class->set_caps =
+        GST_DEBUG_FUNCPTR (gst_jp462bayer_set_caps);
 
-  trans_class->set_caps =
-    GST_DEBUG_FUNCPTR (gst_jp462bayer_set_caps);
-
-  trans_class->transform =
-    GST_DEBUG_FUNCPTR (gst_jp462bayer_transform);
+    trans_class->transform =
+        GST_DEBUG_FUNCPTR (gst_jp462bayer_transform);
 }
 
+/*
+** Function that calculates image size for bayer2rgb2
+*/
 static gboolean
 gst_jp462bayer_get_unit_size (GstBaseTransform * trans, GstCaps * caps, guint * size)
 {
-	GstStructure *structure;
-	int width;
-	int height;
-	int pixsize;
-	int i = 0;
-	const char *name;
+    GstStructure *structure;
+    int width;
+    int height;
 
-	structure = gst_caps_get_structure (caps, 0);
-	if (gst_structure_get_int (structure, "width", &width) &&
+    if ((structure = gst_caps_get_structure (caps, 0)) == NULL)
+    {
+        GST_ERROR("The structure is empty");
+        return FALSE;
+    }
+    if (gst_structure_get_int (structure, "width", &width) &&
       gst_structure_get_int (structure, "height", &height))
     {
-		name = gst_structure_get_name (structure);
-		if (strcmp (name, "ANY"))
-		{
-	  		if (size[i])
-	    		for (i = 0; size[i]; i++)
-	      			*size = width * height * 1.5;
-	  		else
-	    		size[0] = GST_ROUND_UP_4 (width) * height * 1.5;
-	  	return TRUE;
-		}
-		else
-		{
-			if (gst_structure_get_int (structure, "bpp", &pixsize))
-	    	{
-	      	*size = width * height;
-	      	return TRUE;
-	    	}
-		}
-	}
-	//GST_ELEMENT_ERROR (base, CORE, NEGOTIATION, (NULL),
-		//     ("Incomplete caps, some required field missing"));
-	return FALSE;
+        if (strcmp (gst_structure_get_name (structure), "video/x-raw-bayer"))
+                size[0] = GST_ROUND_UP_4 (width) * height * 1.5;
+        else
+                *size = width * height * 1.5;
+        return TRUE;
+      }
+    return FALSE;
 }
 
+
+/*
+**  Function that manage caps
+**  This function change width and height for outputcaps
+**  And change format from YUV to BAYER
+*/
 static GstCaps *
 gst_jp462bayer_transform_caps (GstBaseTransform * trans,
     GstPadDirection direction, GstCaps * caps)
 {
-  GstCaps *ret;
-  GstStructure *structure = NULL;
+    GstStructure    *structure;
+    GstStructure    *newstruct;
+    GstCaps         *newcaps = NULL;
+    const GValue    *width;
+    gchar           *caps_str;
+    gboolean        get_size = TRUE;
+    static gboolean change_caps = FALSE;
+    int             i;
+    static int      compare_size = 0;
 
-  /* this function is always called with a simple caps */
-  g_return_val_if_fail (GST_CAPS_IS_SIMPLE (caps), NULL);
-
-  GST_DEBUG_OBJECT (trans,
-      "Transforming caps %" GST_PTR_FORMAT " in direction %s", caps,
-      (direction == GST_PAD_SINK) ? "sink" : "src");
-
-  ret = gst_caps_copy (caps);
-		structure = gst_structure_copy (gst_caps_get_structure (ret, 0));
-	gst_structure_set (structure,
+    if ((structure = gst_caps_get_structure (caps, 0)) == NULL)
+    {
+        GST_ERROR("The structure is empty");
+        return NULL;
+    }
+    newcaps = (direction == GST_PAD_SRC) ? gst_caps_new_simple ("video/x-raw-yuv", NULL)
+                                         : gst_caps_new_simple ("video/x-raw-bayer", NULL);
+    newstruct = gst_caps_get_structure (newcaps, 0);
+    if (!change_caps)
+    {
+        caps_str = gst_caps_to_string(caps);
+        for (i = 0; caps_str[i]; i++)
+            if (caps_str[i] == ']')
+                get_size = FALSE;
+        if (get_size)
+        {
+            width = gst_structure_get_value(structure, "width");
+            if (direction == GST_PAD_SRC)
+                change_caps = compare_size != g_value_get_int(width) ? TRUE : FALSE;
+            else
+                compare_size = g_value_get_int(width);
+        }
+    }
+    if (!get_size || !change_caps)
+    {
+        gst_structure_set_value (newstruct, "width",
+            gst_structure_get_value (structure, "width"));
+        gst_structure_set_value (newstruct, "height",
+            gst_structure_get_value (structure, "height"));
+    }
+    else
+    {
+        change_caps = TRUE;
+        gst_structure_set (newstruct,
       		"width", GST_TYPE_INT_RANGE, 1, G_MAXINT,
       		"height", GST_TYPE_INT_RANGE, 1, G_MAXINT, NULL);
-		gst_caps_append_structure (ret, structure);
-  /* if pixel aspect ratio, make a range of it */
-  if (gst_structure_has_field (structure, "pixel-aspect-ratio")) {
-	gst_structure_set (structure, "pixel-aspect-ratio", GST_TYPE_FRACTION_RANGE,
-	1, G_MAXINT, G_MAXINT, 1, NULL);
-  }
-  GST_DEBUG_OBJECT (trans, "returning caps: %" GST_PTR_FORMAT, ret);
-  return ret;
+    }
+    gst_structure_set_value (newstruct, "framerate",
+        gst_structure_get_value (structure, "framerate"));
+    GST_DEBUG_OBJECT (newcaps, "transforming caps (into)");
+    return newcaps;
 }
 
 /* initialize the new element
@@ -230,12 +261,38 @@ gst_jp462bayer_transform_caps (GstBaseTransform * trans,
  * initialize instance structure
  */
 static void
-gst_jp462bayer_init (GstJP462bayer * filter,
-    GstJP462bayerClass * gclass)
+gst_jp462bayer_init (GstJP462bayer *filter,GstJP462bayerClass *gclass)
 {
-  gst_base_transform_set_in_place (GST_BASE_TRANSFORM (filter), TRUE);
+    gst_base_transform_set_in_place (GST_BASE_TRANSFORM (filter), TRUE);
+    filter->threads = 0;
+    filter->nb_threads = 1;
 }
 
+/*
+** Function that free structure when you stop the pipeline
+*/
+static void
+gst_jp462bayer_finalize (GstJP462bayer *filter)
+{
+    int             i;
+    t_thread        *tmp;
+
+    if (filter->threads != NULL)
+    {
+        for (i = 0, tmp = filter->threads; i < filter->nb_threads; i++)
+        {
+            tmp = filter->threads->next;
+            g_free(filter->threads);
+            filter->threads = tmp;
+        }
+    }
+  G_OBJECT_CLASS (parent_class)->finalize (G_OBJECT (filter));
+}
+
+
+/*
+** Function that set property for the plugin
+*/
 static void
 gst_jp462bayer_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
@@ -243,15 +300,18 @@ gst_jp462bayer_set_property (GObject * object, guint prop_id,
   GstJP462bayer *filter = GST_JP462BAYER (object);
 
   switch (prop_id) {
-    case PROP_SILENT:
-      filter->silent = g_value_get_boolean (value);
-      break;
+    case PROP_THREADS:
+        filter->nb_threads = g_value_get_int (value);
+        break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
 }
 
+/*
+** Function that get property for the plugin
+*/
 static void
 gst_jp462bayer_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec)
@@ -259,8 +319,8 @@ gst_jp462bayer_get_property (GObject * object, guint prop_id,
   GstJP462bayer *filter = GST_JP462BAYER (object);
 
   switch (prop_id) {
-    case PROP_SILENT:
-      g_value_set_boolean (value, filter->silent);
+    case PROP_THREADS:
+        g_value_set_int (value, filter->nb_threads);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -268,49 +328,111 @@ gst_jp462bayer_get_property (GObject * object, guint prop_id,
   }
 }
 
+/*
+** Function that will detect number core in computer
+*/
+int detect_number_threads(void)
+{
+    unsigned int bit;
+    int np;
+
+    cpu_set_t p_aff;
+    memset( &p_aff, 0, sizeof(p_aff) );
+    sched_getaffinity( 0, sizeof(p_aff), &p_aff );
+    for( np = 0, bit = 0; bit < sizeof(p_aff); bit++ )
+        np += (((uint8_t *)&p_aff)[bit / 8] >> (bit % 8)) & 1;
+    return np;
+}
+
+/*
+** Function that make output caps with the good format and size.
+** This function check if you resize image and how much thread will use.
+*/
 static gboolean
 gst_jp462bayer_set_caps (GstBaseTransform *pad, GstCaps * incaps, GstCaps * outcaps)
 {
 	GstJP462bayer 	*filter;
 	GstStructure 	*structure;
-	gint 			width_in=0, height_in=0;
 	gint 			width_out=0, height_out=0;
-	float 			size;
-	int				i, j;
+	int				i;
 
 	filter = GST_JP462BAYER (pad);
 	structure = gst_caps_get_structure (incaps, 0);
-	gst_structure_get_int (structure, "width", &width_in);
-	gst_structure_get_int (structure, "height", &height_in);
-	filter->width = width_in;
-	filter->height = height_in;
+	gst_structure_get_int (structure, "width", &filter->width);
+	gst_structure_get_int (structure, "height", &filter->height);
 	structure = gst_caps_get_structure (outcaps, 0);
 	gst_structure_get_int (structure, "width", &width_out);
 	gst_structure_get_int (structure, "height", &height_out);
-	if 	(width_in == width_out && height_in == height_out)
+	if 	(filter->width == width_out && filter->height == height_out)
 		filter->size = 1;
-	else if ((float)width_in / (float)width_out == 2.0 && (float)height_in / (float)height_out  == 2.0)
+	else if ((float)filter->width / (float)width_out == 2.0 && (float)filter->height / (float)height_out  == 2.0)
 		filter->size = 2;
-	else if ((float)width_in / (float)width_out == 4.0 && (float)height_in / (float)height_out  == 4.0)
+	else if ((float)filter->width / (float)width_out == 4.0 && (float)filter->height / (float)height_out  == 4.0)
 		filter->size = 4;
 	else
 	{
-		GST_ERROR("you should put output resolution divisible by 1, 2, 3 or 4");
+		GST_ERROR("Output caps resolution has to be divisible by 1, 2, or 4 for fast stream downscaling");
 		return FALSE;
 	}
-	size = (filter->size == 1) ? 0.5 : (filter->size == 2) ? 1.0 : 2.0;
-	for (i = 0, j = 0; i < 16; i++, j++)
+    if (filter->size > 1 && filter->nb_threads > 1)
     {
-		filter->index1[i] = (i % 2 == 1) ? (filter->index1[i - 1] + 8) : (i * size);
-		filter->index2[j] = filter->index1[j] * filter->width;
+        GST_ERROR("Multithreading currently unimplemented for fast stream downscaling, please use threads=1");
+	    return FALSE;
     }
+    if (filter->nb_threads == 0)
+        filter->nb_threads = detect_number_threads();
+    for (i = 0; i < filter->nb_threads; i++)
+        init_thread(&filter->threads, i, filter,
+            (((i % 2 && filter->nb_threads == 4) || (filter->nb_threads < 4)) ? 0 : 1),
+            (((i >= 2) || (i % 2 && filter->nb_threads == 2)) ? 1 : 0));
     return TRUE;
 }
 
-int				get_value(guint32 x, guint32 value1, guint32 value2, guint32 b_of, GstJP462bayer *f, guint8 *data)
+/*
+** Function that initialise each thread
+*/
+void init_thread(t_thread **thread, int num_thread, GstJP462bayer* filter, int start_hor, int start_vert)
+{
+    t_thread	*new_thread;
+    t_thread   	*temp;
+    float 		size;
+    int          i;
+
+    if ((new_thread = g_malloc(sizeof(*new_thread))) == NULL)
+    {
+        GST_ERROR("Failed to allocate memory");
+	    exit(0);
+    }
+    new_thread->next = 0;
+    new_thread->num_thread = num_thread;
+    new_thread->nb_threads = filter->nb_threads;
+    new_thread->width = filter->width;
+    new_thread->height = filter->height;
+    new_thread->size = filter->size;
+    size = (filter->size == 1) ? 0.5 : (filter->size == 2) ? 1.0 : 2.0;
+    new_thread->start_hor = start_hor;
+    new_thread->start_vert = start_vert;
+    for (i = 0; i < 16; i++)
+    {
+		new_thread->index1[i] = (i % 2 == 1) ? (new_thread->index1[i - 1] + 8) : (i * size);
+		new_thread->index2[i] = new_thread->index1[i] * filter->width;
+    }
+    if (!*thread)
+        *thread = new_thread;
+    else
+    {
+      for (temp = *thread; temp->next; temp = temp->next);
+        temp->next = new_thread;
+    }
+}
+
+/*
+** Function that calculate the good coordonate for the resizing
+*/
+int				get_value(guint32 x, guint32 value1, guint32 value2, guint32 b_of, t_thread *f, guint8 *data)
 {
 	guint32		value = 0;
-	guint8	k, l, m;
+	guint8	    k, l, m;
 
 	for (l = 0, m = 0; l < f->size; l++)
 		for (k = 0; k < f->size; k++, m++)
@@ -318,26 +440,69 @@ int				get_value(guint32 x, guint32 value1, guint32 value2, guint32 b_of, GstJP4
 	return value / (f->size << (f->size / 2));
 }
 
-static GstFlowReturn
-gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *outbuf)
+/*
+**  Function that change pixel coordinates to have bayer image
+*/
+void *my_thread_process (void *structure)
 {
-	GstJP462bayer		*filter;
-	guint8 				i, j;
+    guint8 				i, j;
 	guint32				value;
 	guint32				y, x;
 	guint32				b_of;
 	guint32				h_of;
+    t_thread            *f;
 
-	filter = GST_JP462BAYER(pad);
-	for (y = 0, b_of = 0, value = 0; y < filter->height; y += 16, b_of += filter->width << 4)
-			for (x = 0; x < filter->width; x += 16)
-				for (j = 0, h_of = 0; j < (16 / filter->size); ++j, h_of += filter->width)
-					for (i = 0; i < (16 / filter->size); ++i)
-					{
-						value  = (filter->size == 1) ? (inbuf->data[x + filter->index1[i] + filter->index2[j] + b_of]) :
-									get_value(x, filter->index1[i], filter->index2[j], b_of, filter, inbuf->data);
-						outbuf->data[(x / filter->size) + i + (h_of  / filter->size) + (b_of / (filter->size << filter->size / 2))] = value;
-					}
+    f = structure;
+    if (f->nb_threads == 1)
+    {
+        for (y = 0, b_of = 0, value = 0; y < f->height; y += 16, b_of += f->width << 4)
+		    for (x = 0; x < f->width; x += 16)
+		    	for (j = f->start_vert, h_of = f->start_vert * f->width; j < (16 / f->size); j += 1, h_of += f->width)
+		    		for (i = f->start_hor; i < (16 / f->size); i += ((f->nb_threads >> 2) + 1))
+		    		{
+		    			value  = (f->size == 1) ? (f->indata[x + f->index1[i] + f->index2[j] + b_of]) :
+		    						get_value(x, f->index1[i], f->index2[j], b_of, f, f->indata);
+                        f->outdata[(x / f->size) + i + (h_of / f->size) + (b_of / (f->size << f->size / 2))] = value;
+                    }
+    }
+    else
+    {
+        for (y = 0, b_of = 0, value = 0; y < f->height; y += 16, b_of += f->width << 4)
+		    for (x = 0; x < f->width; x += 16)
+		    	for (j = f->start_vert, h_of = f->start_vert * f->width; j < 16; j += 2, h_of += f->width)
+		    		for (i = f->start_hor; i < 16; i += f->nb_threads / 2)
+		    		{
+		    			value  = f->indata[x + f->index1[i] + f->index2[j] + b_of];
+                        f->outdata[x + i + (h_of * 2) + b_of - (f->width * f->start_vert)] = value;
+                    }
+    }
+    pthread_exit(0);
+}
+
+/*
+** Function that receive buffer and send the buffer modified
+*/
+static GstFlowReturn
+gst_jp462bayer_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *outbuf)
+{
+	GstJP462bayer		*filter;
+    t_thread            *tmp;
+    int                 i;
+    void                *ret;
+
+    filter = GST_JP462BAYER(pad);
+    for (i = 0, tmp = filter->threads; i < filter->nb_threads; i++)
+    {
+        tmp->indata = inbuf->data;
+        tmp->outdata = outbuf->data;
+        if (pthread_create (&tmp->th, NULL, my_thread_process, (void*) tmp) < 0)
+        {
+            GST_ERROR("pthread_create error for thread");
+            exit (1);
+        }
+        (void)pthread_join(tmp->th, &ret);
+        tmp = tmp->next;
+    }
 	return  GST_FLOW_OK;
 }
 
@@ -353,18 +518,17 @@ jp462bayer_init (GstPlugin * jp462bayer)
 }
 
 /* gstreamer looks for this structure to register jp462bayers
- *
  * exchange the string 'Template jp462bayer' with your jp462bayer description
  */
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     "jp462bayer",
-    "Converts raw JP46 data to raw bayer data",
+    "Converts raw JP46 data from Elphel cameras to raw Bayer data",
     jp462bayer_init,
     VERSION,
     "LGPL",
     "GStreamer",
-    "http://www.ubicast.eu/"
+    "http://code.google.com/p/gst-plugins-elphel/"
 )
 

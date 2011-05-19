@@ -3,7 +3,7 @@
  * Copyright (C) 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
  * Copyright (C) 2009 Anthony Violo <<user@hostname.org>>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -73,6 +73,7 @@ G_BEGIN_DECLS
 typedef struct _GstBayer2rgb2      GstBayer2rgb2;
 typedef struct _GstBayer2rgb2Class GstBayer2rgb2Class;
 
+
 struct		_GstBayer2rgb2
 {
   GstBaseTransform element;
@@ -81,16 +82,16 @@ struct		_GstBayer2rgb2
   gboolean	header;
   gboolean	gpu;
   guint8      	methode;
-  guint16      	pixel;
-  guint16      	width;
-  guint16      	height;
+  gint32      	format;
+  gint32      	width;
+  gint32      	height;
 };
 
-struct		_GstBayer2rgb2Class 
+struct		_GstBayer2rgb2Class
 {
   GstBaseTransformClass parent_class;
 };
- 
+
 typedef enum
   {
     DC1394_BAYER_METHOD_NEAREST=0,
@@ -110,7 +111,7 @@ typedef enum
     DC1394_COLOR_FILTER_GRBG,
     DC1394_COLOR_FILTER_BGGR
   }	dc1394color_filter_t ;
- 
+
 /**
 * Error codes returned by most libdc1394 functions.
 *
@@ -167,13 +168,13 @@ typedef enum
   }	dc1394bool_t;
 
 dc1394error_t	dc1394_bayer_decoding_8bit
-(const uint8_t * bayer, 
- uint8_t * rgb, uint32_t sx, 
- uint32_t sy, dc1394color_filter_t tile, 
+(const uint8_t * bayer,
+ uint8_t * rgb, uint32_t sx,
+ uint32_t sy, dc1394color_filter_t tile,
  dc1394bayer_method_t method);
 
 dc1394error_t	dc1394_bayer_decoding_16bit
-(const uint16_t * bayer, 
+(const uint16_t * bayer,
  uint16_t * rgb, uint32_t sx,
  uint32_t sy, dc1394color_filter_t tile,
  dc1394bayer_method_t method, uint32_t bits);
@@ -181,3 +182,4 @@ GType gst_bayer2rgb2_get_type(void);
 G_END_DECLS
 
 #endif /* __GST_BAYER2RGB2_H__ */
+

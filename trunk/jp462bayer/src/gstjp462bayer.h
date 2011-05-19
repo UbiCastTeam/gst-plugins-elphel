@@ -70,16 +70,34 @@ GST_DEBUG_CATEGORY_STATIC (gst_jp462bayer_debug);
 typedef struct _GstJP462bayer      GstJP462bayer;
 typedef struct _GstJP462bayerClass GstJP462bayerClass;
 
+typedef struct	    s_thread
+{
+    guint8          *indata;
+    guint8          *outdata;
+    int             start_vert;
+    int             start_hor;
+    int             num_thread;
+    gint32			width;
+  	gint32			height;
+    guint8          nb_threads;
+    guint32			index1[16];
+	guint32			index2[16];
+    guint8			size;
+    pthread_t       th;
+    struct s_thread *next;
+}                   t_thread;
+
 struct _GstJP462bayer
 {
-	GstVideoFilter element;
-  	guint16						width;
-  	guint16						height;
+	GstVideoFilter              element;
+  	gint32						width;
+  	gint32						height;
   	GstPad						*sinkpad, *srcpad;
-  	gboolean					silent;
  	guint8						size;
-	guint32						index1[16];
-	guint32						index2[16];
+    guint8                      nb_threads;
+    guint32			            index1[16];
+	guint32			            index2[16];
+    t_thread                    *threads;
 };
 
 struct _GstJP462bayerClass
