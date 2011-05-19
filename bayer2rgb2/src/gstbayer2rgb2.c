@@ -84,10 +84,7 @@ enum
   {
     PROP_0,
     PROP_METHODE,
-    PROP_FIRSTPIXEL,
     PROP_BPP,
-    PROP_WIDTH,
-    PROP_HEIGHT,
   };
 
 enum
@@ -101,14 +98,16 @@ enum
     VNG,
     AHD
   };
+#define SINK_CAPS "video/x-raw-bayer,format=(string){gbrg, bggr, grbg, rggb}," \
+  "width=(int)[1,MAX],height=(int)[1,MAX],framerate=(fraction)[0/1,MAX]"
 
 enum
-  {
-    RGGB,
-    GBRG,
-    GRBG,
-    BGGR
-  };
+{
+  GST_BAYER_2_RGB_FORMAT_BGGR = 0,
+  GST_BAYER_2_RGB_FORMAT_GBRG,
+  GST_BAYER_2_RGB_FORMAT_GRBG,
+  GST_BAYER_2_RGB_FORMAT_RGGB
+};
 
 static const GstElementDetails gst_alpha_color_details =
 GST_ELEMENT_DETAILS
@@ -123,15 +122,14 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE
   ("sink",
    GST_PAD_SINK,
    GST_PAD_ALWAYS,
-   GST_STATIC_CAPS("ANY")
+   GST_STATIC_CAPS(SINK_CAPS)
    );
 
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE
   ("src",
    GST_PAD_SRC,
    GST_PAD_ALWAYS,
-   GST_STATIC_CAPS
-   (GST_VIDEO_CAPS_RGB ";")
+   GST_STATIC_CAPS(GST_VIDEO_CAPS_RGB ";")
    );
 
 
@@ -159,11 +157,8 @@ static GType
 gst_methode_pattern_get_type (int flag)
 {
   static GType methode_pattern_type = 0;
-  static GType pixel_pattern_type = 0;
 
-  if (!flag)
-    {
-      if (!methode_pattern_type)
+  if (!methode_pattern_type)
 	{
 	  static GEnumValue pattern_types[] =
 	    {
@@ -181,32 +176,14 @@ gst_methode_pattern_get_type (int flag)
 	    g_enum_register_static ("GstMethodeRGB",
 				    pattern_types);
 	}
-      return methode_pattern_type;
-    }
-  if (!pixel_pattern_type)
-    {
-      static GEnumValue pixel_types[] =
-	{
-	  { RGGB, "RGGB", "RGGB" },
-	  { GBRG, "GBRG", "GBRG" },
-	  { GRBG, "GRGB", "GRGB" },
-	  { BGGR, "BGGR", "BGGR" },
-	  {0, NULL, NULL },
-	};
-      pixel_pattern_type =
-	g_enum_register_static ("GstPixelRGB",
-				pixel_types);
-    }
-  return pixel_pattern_type;
+  return methode_pattern_type;
 }
 
 static void
 gst_bayer2rgb2_base_init (gpointer gclass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
-
   gst_element_class_set_details(element_class, &gst_alpha_color_details);
-
   gst_element_class_add_pad_template(element_class,
      gst_static_pad_template_get (&sink_factory));
   gst_element_class_add_pad_template (element_class,
@@ -221,45 +198,29 @@ gst_bayer2rgb2_class_init (GstBayer2rgb2Class * klass)
   GstBaseTransformClass *gstbasetransform_class;
 
   gobject_class = (GObjectClass *) klass;
-
   gstelement_class = (GstElementClass *) klass;
   gstbasetransform_class = (GstBaseTransformClass *) klass;
-
   gobject_class->set_property = gst_bayer2rgb2_set_property;
   gobject_class->get_property = gst_bayer2rgb2_get_property;
-
   gstbasetransform_class->transform_caps =
     GST_DEBUG_FUNCPTR (gst_bayer2rgb2_transform_caps);
-
   GST_BASE_TRANSFORM_CLASS (klass)->get_unit_size =
       GST_DEBUG_FUNCPTR (gst_bayer2rgb2_get_unit_size);
-
   gstbasetransform_class->set_caps =
     GST_DEBUG_FUNCPTR (gst_bayer2rgb2_set_caps);
-
   gstbasetransform_class->transform =
     GST_DEBUG_FUNCPTR (gst_bayer2rgb2_transform);
-
   g_object_class_install_property
     (gobject_class, PROP_BPP,
      g_param_spec_boolean
      ("bpp", "Bpp", "Bits per pixel (needed with raw sensor data): \n\t\t        FALSE = 8 bpp, TRUE = 16 bpp.",
       FALSE, G_PARAM_READWRITE));
-
   g_object_class_install_property
     (gobject_class, PROP_METHODE,
      g_param_spec_enum
      ("method", "Method",
       "Demosaicing interpolation algorithm",
       gst_methode_pattern_get_type(0), 1, G_PARAM_READWRITE));
-
-   g_object_class_install_property
-    (gobject_class, PROP_FIRSTPIXEL,
-     g_param_spec_enum
-     ("pixel-order", "Pixel-order",
-      "Pixel ordering template",
-      gst_methode_pattern_get_type(1), 2, G_PARAM_READWRITE));
-
    GST_DEBUG_CATEGORY_INIT (gst_bayer2rgb2_debug, "bayer2rgb2", 0,
 			    "YUV->RGB");
 }
@@ -271,7 +232,7 @@ gst_bayer2rgb2_init (GstBayer2rgb2 * filter,
   gst_base_transform_set_in_place (GST_BASE_TRANSFORM (filter), TRUE);
   filter->header = 0;
   filter->methode = 1;
-  filter->pixel = 2;
+  filter->format = 0;
   filter->width = 0;
   filter->height = 0;
   filter->bpp = FALSE;
@@ -285,7 +246,6 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
   int width;
   int height;
   int pixsize;
-  int i;
   const char *name;
 
   structure = gst_caps_get_structure (caps, 0);
@@ -294,21 +254,16 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
     {
       name = gst_structure_get_name (structure);
       if (strcmp (name, "video/x-raw-rgb"))
-	{
-	  if (!size[0])
-	    size[0] = width * height * 1.5;
-	  for (i = 0; size[i]; i++)
-	    *size = GST_ROUND_UP_4 (width) * height * 1.5;
-	  return TRUE;
-	}
-      else
-	{
-	  if (gst_structure_get_int (structure, "bpp", &pixsize))
 	    {
-	      *size = width * height * (pixsize / 8);
-	      return TRUE;
+	        size[0] = width * height * 1.5;
+	        return TRUE;
 	    }
-	}
+      else
+	    {
+            gst_structure_get_int (structure, "bpp", &pixsize);
+	        *size = width * height * (pixsize / 8);
+	        return TRUE;
+	    }
     }
   GST_ELEMENT_ERROR (base, CORE, NEGOTIATION, (NULL),
 		     ("Incomplete caps, some required field missing"));
@@ -322,10 +277,10 @@ static GstCaps *gst_bayer2rgb2_transform_caps
   GstCaps *newcaps;
   GstStructure *newstruct;
 
-  GST_DEBUG_OBJECT (caps, "transforming caps (from)");
+    GST_DEBUG_OBJECT (caps, "transforming caps (from)");
   structure = gst_caps_get_structure (caps, 0);
   if (direction == GST_PAD_SRC)
-    newcaps = gst_caps_new_simple ("video/x-raw-yuv", NULL);
+    newcaps = gst_caps_new_simple ("video/x-raw-bayer", NULL);
   else
     newcaps = gst_caps_new_simple ("video/x-raw-rgb", NULL);
   newstruct = gst_caps_get_structure (newcaps, 0);
@@ -342,33 +297,26 @@ static GstCaps *gst_bayer2rgb2_transform_caps
 static gboolean gst_bayer2rgb2_set_caps
 (GstBaseTransform * btrans, GstCaps * incaps, GstCaps * outcaps)
 {
-  GstBayer2rgb2 *alpha;
-  GstStructure *structure;
-  gboolean ret;
-  const GValue *fps;
-  gint w=0, h=0, depth, bpp, val;
+    GstBayer2rgb2 *bayer2rgb2 = GST_BAYER2RGB2 (btrans);
+    GstStructure *structure;
+    const char *format;
 
-  alpha = GST_BAYER2RGB2 (btrans);
-  structure = gst_caps_get_structure (incaps, 0);
-  ret = gst_structure_get_int (structure, "width", &w);
-  alpha->width = w;
-  ret &= gst_structure_get_int (structure, "height", &h);
-  alpha->height = h;
-  fps = gst_structure_get_value (structure, "framerate");
-  ret &= (fps != NULL && GST_VALUE_HOLDS_FRACTION (fps));
-  structure = gst_caps_get_structure (outcaps, 0);
-  fps = gst_structure_get_value (structure, "framerate");
-  ret = (fps != NULL && GST_VALUE_HOLDS_FRACTION (fps));
-  ret &= gst_structure_get_int (structure, "bpp", &bpp);
-  ret &= gst_structure_get_int (structure, "red_mask", &val);
-  gst_structure_get_int (structure, "green_mask", &val);
-  gst_structure_get_int (structure, "blue_mask", &val);
-  ret &= gst_structure_get_int (structure, "depth", &depth);
-  if (!ret || val == 0 || depth != 24 || bpp != 24)
-    {
-      GST_DEBUG_OBJECT (alpha, "incomplete or non-RGB input caps");
-      return FALSE;
-    }
+    GST_DEBUG ("in caps %" GST_PTR_FORMAT " out caps %" GST_PTR_FORMAT, incaps,
+          outcaps);
+    structure = gst_caps_get_structure (incaps, 0);
+    gst_structure_get_int (structure, "width", &bayer2rgb2->width);
+    gst_structure_get_int (structure, "height", &bayer2rgb2->height);
+    format = gst_structure_get_string (structure, "format");
+    if (g_str_equal (format, "bggr"))
+        bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_BGGR;
+    else if (g_str_equal (format, "gbrg"))
+        bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_GBRG;
+    else if (g_str_equal (format, "grbg"))
+        bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_GRBG;
+    else if (g_str_equal (format, "rggb"))
+        bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_RGGB;
+    else
+        return FALSE;
   return TRUE;
 }
 
@@ -384,18 +332,9 @@ gst_bayer2rgb2_set_property (GObject * object, guint prop_id,
     case PROP_METHODE:
       filter->methode = g_value_get_enum (value);
       break;
-    case PROP_FIRSTPIXEL:
-      filter->pixel = g_value_get_enum (value);
-      break;
     case PROP_BPP:
       filter->bpp = g_value_get_boolean (value);
       break;
-    case PROP_WIDTH:
-      filter->width = g_value_get_int (value);
-      break;
-    case PROP_HEIGHT:
-      filter->height = g_value_get_int (value);
-    break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -412,18 +351,9 @@ gst_bayer2rgb2_get_property (GObject * object, guint prop_id,
     case PROP_METHODE:
       g_value_set_enum (value, filter->methode);
       break;
-    case PROP_FIRSTPIXEL:
-      g_value_set_enum (value, filter->pixel);
-      break;
     case PROP_BPP:
       g_value_set_boolean (value, filter->bpp);
       break;
-    case PROP_WIDTH:
-      g_value_set_int (value, filter->width);
-    break;
-    case PROP_HEIGHT:
-      g_value_set_int (value, filter->height);
-    break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -440,7 +370,7 @@ uint8_t	*bayer2rgb2(GstBayer2rgb2 *filter, uint8_t *input, uint8_t *output)
   switch(bpp)
     {
     case 8:
-      dc1394_bayer_decoding_8bit(input, output, filter->width, filter->height, filter->pixel, filter->methode);
+      dc1394_bayer_decoding_8bit(input, output, filter->width, filter->height, filter->format, filter->methode);
       break;
     case 16:
     default:
@@ -454,7 +384,7 @@ uint8_t	*bayer2rgb2(GstBayer2rgb2 *filter, uint8_t *input, uint8_t *output)
 	    *(((uint8_t*)input) + i + 1) = tmp;
 	  }
       }
-      dc1394_bayer_decoding_16bit((const uint16_t*)input, (uint16_t*)output, filter->width, filter->height, filter->pixel, filter->methode, 16);
+      dc1394_bayer_decoding_16bit((const uint16_t*)input, (uint16_t*)output, filter->width, filter->height, filter->format, filter->methode, 16);
       break;
     }
   return output;
@@ -470,14 +400,14 @@ gst_bayer2rgb2_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *ou
   filter = GST_BAYER2RGB2(pad);
   input = (uint8_t *) GST_BUFFER_DATA (inbuf);
   output = (uint8_t *) GST_BUFFER_DATA (outbuf);
-  if (filter->pixel == 0)
-    filter->pixel = (guint16) DC1394_COLOR_FILTER_RGGB;
-  if (filter->pixel == 1)
-    filter->pixel = (guint16) DC1394_COLOR_FILTER_GBRG;
-  if (filter->pixel == 2)
-    filter->pixel = (guint16) DC1394_COLOR_FILTER_GRBG;
-  if (filter->pixel == 3)
-    filter->pixel = (guint16) DC1394_COLOR_FILTER_BGGR;
+  if (filter->format == GST_BAYER_2_RGB_FORMAT_RGGB)
+    filter->format = (guint16) DC1394_COLOR_FILTER_RGGB;
+  if (filter->format == GST_BAYER_2_RGB_FORMAT_GBRG)
+    filter->format = (guint16) DC1394_COLOR_FILTER_GRBG;
+  if (filter->format == GST_BAYER_2_RGB_FORMAT_GRBG)
+    filter->format = (guint16) DC1394_COLOR_FILTER_GBRG;
+ if (filter->format == GST_BAYER_2_RGB_FORMAT_BGGR)
+    filter->format = (guint16) DC1394_COLOR_FILTER_BGGR;
   if (filter->height > 8 && filter->width > 8)
     output = bayer2rgb2(filter, input, output);
   return GST_FLOW_OK;
@@ -503,3 +433,4 @@ GST_PLUGIN_DEFINE (
     "GStreamer",
     "http://www.ubicast.eu/"
 )
+
