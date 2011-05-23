@@ -209,6 +209,7 @@ gst_jp462bayer_transform_caps (GstBaseTransform * trans,
     gchar           *caps_str;
     gboolean        get_size = TRUE;
     static gboolean change_caps = FALSE;
+    char            *str;
     int             i;
     static int      compare_size = 0;
 
@@ -223,8 +224,9 @@ gst_jp462bayer_transform_caps (GstBaseTransform * trans,
     if (!change_caps)
     {
         caps_str = gst_caps_to_string(caps);
-        for (i = 0; caps_str[i]; i++)
-            if (caps_str[i] == ']')
+        str = strstr(caps_str, "width");
+        for (i = 0; str[i] != ' '; i++)
+            if (str[i] == '[')
                 get_size = FALSE;
         if (get_size)
         {
