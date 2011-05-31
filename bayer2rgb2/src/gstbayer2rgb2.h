@@ -85,6 +85,13 @@ struct		_GstBayer2rgb2
   gint32      	format;
   gint32      	width;
   gint32      	height;
+
+    /***** Bayer2rgb variable *****/
+  int stride;
+  int pixsize;                  /* bytes per pixel */
+  int r_off;                    /* offset for red */
+  int g_off;                    /* offset for green */
+  int b_off;                    /* offset for blue */
 };
 
 struct		_GstBayer2rgb2Class
@@ -94,8 +101,6 @@ struct		_GstBayer2rgb2Class
 
 typedef enum
   {
-    DC1394_BAYER_METHOD_NEAREST=0,
-    DC1394_BAYER_METHOD_SIMPLE,
     DC1394_BAYER_METHOD_BILINEAR,
     DC1394_BAYER_METHOD_HQLINEAR,
     DC1394_BAYER_METHOD_DOWNSAMPLE,
