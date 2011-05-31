@@ -98,6 +98,7 @@ struct _GstJP462bayer
     guint32			            index1[16];
 	guint32			            index2[16];
     t_thread                    *threads;
+    GStaticMutex lock;
 };
 
 struct _GstJP462bayerClass
