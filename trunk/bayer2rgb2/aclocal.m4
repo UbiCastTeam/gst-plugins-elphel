@@ -9127,3 +9127,4 @@ AC_SUBST([am__untar])
 
 m4_include([m4/as-compiler-flag.m4])
 m4_include([m4/as-version.m4])
+m4_include([m4/orc.m4])

@@ -28,13 +28,13 @@ dnl check for tools
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
+dnl Orc
+ORC_CHECK([0.4.11])
 
 dnl decide on error flags
 AS_COMPILER_FLAG(-Wall -lefenz, GST_WALL="yes", GST_WALL="no")
-                                                                                
 if test "x$GST_WALL" = "xyes"; then
    GST_ERROR="$GST_ERROR -Wall"
-                                                                                
    if test "x$GST_PLUGIN_CVS" = "xyes"; then
      AS_COMPILER_FLAG(-Werror,GST_ERROR="$GST_ERROR -Werror",GST_ERROR="$GST_ERROR")
    fi
@@ -73,7 +73,7 @@ AC_SUBST(GST_MAJORMINOR)
 
 dnl If we need them, we can also use the base class libraries
 PKG_CHECK_MODULES(GST_BASE, gstreamer-base-$GST_MAJORMINOR >= $GST_REQUIRED,
-                  HAVE_GST_BASE=yes, HAVE_GST_BASE=no)
+		  HAVE_GST_BASE=yes, HAVE_GST_BASE=no)
 
 dnl Give a warning if we don't have gstreamer libs
 dnl you can turn this into an error if you need them
@@ -87,8 +87,8 @@ AC_SUBST(GST_BASE_LIBS)
 
 dnl If we need them, we can also use the gstreamer-plugins-base libraries
 PKG_CHECK_MODULES(GSTPB_BASE,
-                  gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED,
-                  HAVE_GSTPB_BASE=yes, HAVE_GSTPB_BASE=no)
+		  gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED,
+		  HAVE_GSTPB_BASE=yes, HAVE_GSTPB_BASE=no)
 
 dnl Give a warning if we don't have gstreamer libs
 dnl you can turn this into an error if you need them
@@ -102,8 +102,8 @@ AC_SUBST(GSTPB_BASE_LIBS)
 
 dnl If we need them, we can also use the gstreamer-controller libraries
 PKG_CHECK_MODULES(GSTCTRL,
-                  gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED,
-                  HAVE_GSTCTRL=yes, HAVE_GSTCTRL=no)
+		  gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED,
+		  HAVE_GSTCTRL=yes, HAVE_GSTCTRL=no)
 
 dnl Give a warning if we don't have gstreamer-controller
 dnl you can turn this into an error if you need them
@@ -128,3 +128,4 @@ GST_PLUGIN_LDFLAGS='-module -avoid-version -export-symbols-regex [_]*\(gst_\|Gst
 AC_SUBST(GST_PLUGIN_LDFLAGS)
 
 AC_OUTPUT(Makefile m4/Makefile src/Makefile)
+ORC_OUTPUT

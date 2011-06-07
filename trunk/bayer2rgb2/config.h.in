@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Disable Orc */
+#undef DISABLE_ORC
+
 /* Define the version */
 #undef GST_PLUGIN_VERSION
 
@@ -14,6 +17,9 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
+
+/* Use Orc */
+#undef HAVE_ORC
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
