@@ -73,20 +73,15 @@ G_BEGIN_DECLS
 typedef struct _GstBayer2rgb2      GstBayer2rgb2;
 typedef struct _GstBayer2rgb2Class GstBayer2rgb2Class;
 
-
 struct		_GstBayer2rgb2
 {
   GstBaseTransform element;
   uint8_t	*tmp;
   gboolean	bpp;
-  gboolean	header;
-  gboolean	gpu;
   guint8      	methode;
   gint32      	format;
   gint32      	width;
   gint32      	height;
-
-    /***** Bayer2rgb variable *****/
   int stride;
   int pixsize;                  /* bytes per pixel */
   int r_off;                    /* offset for red */

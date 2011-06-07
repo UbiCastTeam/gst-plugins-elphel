@@ -64,12 +64,13 @@
 #  include <config.h>
 #endif
 
-#define SRC_CAPS "video/x-raw-bayer,format=(string){gbrg, bggr, grbg, rggb}," \
+#define SRC_CAPS "video/x-raw-bayer,format=(string){bggr,grbg,gbrg,rggb}," \
   "width=(int)[1,MAX],height=(int)[1,MAX],framerate=(fraction)[0/1,MAX]"
 
 #define _GNU_SOURCE
 #include <sched.h>
 #include <gst/gst.h>
+#include <gst/video/video.h>
 #include <string.h>
 #include <stdint.h>
 #include <pthread.h>
@@ -156,6 +157,9 @@ gst_jp462bayer_class_init (GstJP462bayerClass * klass)
 
     trans_class->transform_caps = GST_DEBUG_FUNCPTR (gst_jp462bayer_transform_caps);
 
+    trans_class->fixate_caps =
+        GST_DEBUG_FUNCPTR (gst_jp462bayer_fixate_caps);
+
     trans_class->get_unit_size =
         GST_DEBUG_FUNCPTR (gst_jp462bayer_get_unit_size);
 
@@ -164,9 +168,6 @@ gst_jp462bayer_class_init (GstJP462bayerClass * klass)
 
     trans_class->transform =
         GST_DEBUG_FUNCPTR (gst_jp462bayer_transform);
-
-    trans_class->fixate_caps =
-        GST_DEBUG_FUNCPTR (gst_jp462bayer_fixate_caps);
 
 }
 
@@ -334,6 +335,7 @@ gst_jp462bayer_fixate_caps (GstBaseTransform * base, GstPadDirection direction,
 
   ins = gst_caps_get_structure (caps, 0);
   outs = gst_caps_get_structure (othercaps, 0);
+
   from_par = gst_structure_get_value (ins, "pixel-aspect-ratio");
   to_par = gst_structure_get_value (outs, "pixel-aspect-ratio");
 
@@ -387,6 +389,28 @@ gst_jp462bayer_fixate_caps (GstBaseTransform * base, GstPadDirection direction,
     gst_structure_get_int (outs, "width", &w);
     gst_structure_get_int (outs, "height", &h);
 
+    /* if both width and height are already fixed, we can't do anything
+     * about it anymore */
+
+   if (w && h) {
+      guint n, d;
+
+      GST_DEBUG_OBJECT (base, "dimensions already set to %dx%d, not fixating",
+	  w, h);
+      if (!gst_value_is_fixed (to_par)) {
+	if (gst_video_calculate_display_ratio (&n, &d, from_w, from_h,
+		from_par_n, from_par_d, w, h)) {
+	  GST_DEBUG_OBJECT (base, "fixating to_par to %dx%d", n, d);
+	  if (gst_structure_has_field (outs, "pixel-aspect-ratio"))
+	    gst_structure_fixate_field_nearest_fraction (outs,
+		"pixel-aspect-ratio", n, d);
+	  else if (n != d)
+	    gst_structure_set (outs, "pixel-aspect-ratio", GST_TYPE_FRACTION,
+		n, d, NULL);
+	}
+      }
+      goto done;
+    }
 
     /* Calculate input DAR */
     if (!gst_util_fraction_multiply (from_w, from_h, from_par_n, from_par_d,
@@ -729,7 +753,6 @@ done:
   if (to_par == &tpar)
     g_value_unset (&tpar);
 }
-
 
 /*
 ** Function that make output caps with the good format and size.

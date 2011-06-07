@@ -40,7 +40,8 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	config.guess config.sub depcomp install-sh ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-compiler-flag.m4 \
-	$(top_srcdir)/m4/as-version.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/as-version.m4 $(top_srcdir)/m4/orc.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -72,7 +73,7 @@ top_distdir = $(distdir)
 am__remove_distdir = \
   { test ! -d "$(distdir)" \
     || { find "$(distdir)" -type d ! -perm -200 -exec chmod u+w {} ';' \
-         && rm -fr "$(distdir)"; }; }
+	 && rm -fr "$(distdir)"; }; }
 am__relativize = \
   dir0=`pwd`; \
   sed_first='s,^\([^/]*\)/.*$$,\1,'; \
@@ -83,16 +84,16 @@ am__relativize = \
     first=`echo "$$dir1" | sed -e "$$sed_first"`; \
     if test "$$first" != "."; then \
       if test "$$first" = ".."; then \
-        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
-        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
+	dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
+	dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
       else \
-        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
-        if test "$$first2" = "$$first"; then \
-          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
-        else \
-          dir2="../$$dir2"; \
-        fi; \
-        dir0="$$dir0"/"$$first"; \
+	first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
+	if test "$$first2" = "$$first"; then \
+	  dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
+	else \
+	  dir2="../$$dir2"; \
+	fi; \
+	dir0="$$dir0"/"$$first"; \
       fi; \
     fi; \
     dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
@@ -164,6 +165,10 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ORCC = @ORCC@
+ORCC_FLAGS = @ORCC_FLAGS@
+ORC_CFLAGS = @ORC_CFLAGS@
+ORC_LIBS = @ORC_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -487,12 +492,12 @@ distdir: $(DISTFILES)
 	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
 	    ($(am__cd) $$subdir && \
 	      $(MAKE) $(AM_MAKEFLAGS) \
-	        top_distdir="$$new_top_distdir" \
-	        distdir="$$new_distdir" \
+		top_distdir="$$new_top_distdir" \
+		distdir="$$new_distdir" \
 		am__remove_distdir=: \
 		am__skip_length_check=: \
 		am__skip_mode_fix=: \
-	        distdir) \
+		distdir) \
 	      || exit 1; \
 	  fi; \
 	done
@@ -574,14 +579,14 @@ distcheck: dist
 	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
 	  && $(MAKE) $(AM_MAKEFLAGS) uninstall \
 	  && $(MAKE) $(AM_MAKEFLAGS) distuninstallcheck_dir="$$dc_install_base" \
-	        distuninstallcheck \
+		distuninstallcheck \
 	  && chmod -R a-w "$$dc_install_base" \
 	  && ({ \
 	       (cd ../.. && umask 077 && mkdir "$$dc_destdir") \
 	       && $(MAKE) $(AM_MAKEFLAGS) DESTDIR="$$dc_destdir" install \
 	       && $(MAKE) $(AM_MAKEFLAGS) DESTDIR="$$dc_destdir" uninstall \
 	       && $(MAKE) $(AM_MAKEFLAGS) DESTDIR="$$dc_destdir" \
-	            distuninstallcheck_dir="$$dc_destdir" distuninstallcheck; \
+		    distuninstallcheck_dir="$$dc_destdir" distuninstallcheck; \
 	      } || { rm -rf "$$dc_destdir"; exit 1; }) \
 	  && rm -rf "$$dc_destdir" \
 	  && $(MAKE) $(AM_MAKEFLAGS) dist \
@@ -597,11 +602,11 @@ distuninstallcheck:
 	@$(am__cd) '$(distuninstallcheck_dir)' \
 	&& test `$(distuninstallcheck_listfiles) | wc -l` -le 1 \
 	   || { echo "ERROR: files left after uninstall:" ; \
-	        if test -n "$(DESTDIR)"; then \
-	          echo "  (check DESTDIR support)"; \
-	        fi ; \
-	        $(distuninstallcheck_listfiles) ; \
-	        exit 1; } >&2
+		if test -n "$(DESTDIR)"; then \
+		  echo "  (check DESTDIR support)"; \
+		fi ; \
+		$(distuninstallcheck_listfiles) ; \
+		exit 1; } >&2
 distcleancheck: distclean
 	@if test '$(srcdir)' = . ; then \
 	  echo "ERROR: distcleancheck can only run from a VPATH build" ; \
@@ -736,4 +741,3 @@ uninstall-am:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-

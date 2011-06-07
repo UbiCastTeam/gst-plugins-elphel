@@ -1,1 +1,1 @@
-EXTRA_DIST = as-version.m4 as-compiler-flag.m4
+EXTRA_DIST = as-version.m4 as-compiler-flag.m4 orc.m4

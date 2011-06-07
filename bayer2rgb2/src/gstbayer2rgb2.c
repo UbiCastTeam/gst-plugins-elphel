@@ -118,10 +118,10 @@
 #include <gst/video/video.h>
 #include <string.h>
 #include "gstbayer2rgb2.h"
+#include "gstbayerorc.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_bayer2rgb2_debug);
 #define GST_CAT_DEFAULT gst_bayer2rgb2_debug
-
 
 enum
 {
@@ -149,20 +149,18 @@ enum
     AHD
   };
 
-#define SINK_CAPS "video/x-raw-bayer,format=(string){gbrg, bggr, grbg, rggb}," \
+#define SINK_CAPS "video/x-raw-bayer,format=(string){bggr,grbg,gbrg,rggb}," \
   "width=(int)[1,MAX],height=(int)[1,MAX],framerate=(fraction)[0/1,MAX]"
 
-#define	SRC_CAPS                                   \
-    GST_VIDEO_CAPS_RGB ";"                         \
-    GST_VIDEO_CAPS_BGR ";"                         \
-    GST_VIDEO_CAPS_RGBx ";"                        \
-    GST_VIDEO_CAPS_xRGB ";"                        \
-    GST_VIDEO_CAPS_BGRx ";"                        \
-    GST_VIDEO_CAPS_xBGR ";"                        \
-    GST_VIDEO_CAPS_RGBA ";"                        \
-    GST_VIDEO_CAPS_ARGB ";"                        \
-    GST_VIDEO_CAPS_BGRA ";"                        \
-    GST_VIDEO_CAPS_ABGR ";"
+#define	SRC_CAPS                                 \
+  GST_VIDEO_CAPS_RGBx";"                          \
+  GST_VIDEO_CAPS_xRGB ";"                        \
+  GST_VIDEO_CAPS_BGRx ";"                        \
+  GST_VIDEO_CAPS_xBGR ";"                        \
+  GST_VIDEO_CAPS_RGBA ";"                        \
+  GST_VIDEO_CAPS_ARGB ";"                        \
+  GST_VIDEO_CAPS_BGRA ";"                        \
+  GST_VIDEO_CAPS_ABGR
 
 enum
 {
@@ -180,7 +178,14 @@ GST_ELEMENT_DETAILS
    "Converts raw bayer data to RGB images with selectable demosaicing methods and JP46 (Elphel) mode support",
    "Anthony Violo <anthony.violo@ubicast.eu>"
    );
-
+/*
+static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE
+  ("src",
+   GST_PAD_SRC,
+   GST_PAD_REQUEST,
+   GST_STATIC_CAPS(SRC_CAPS)
+   );
+*/
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE
   ("sink",
    GST_PAD_SINK,
@@ -188,13 +193,18 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE
    GST_STATIC_CAPS(SINK_CAPS)
    );
 
+#define COMMON_VIDEO_CAPS \
+  "width = (int) [ 1, 2147483647 ], " \
+  "height = (int) [ 1,  2147483647], " \
+  "framerate = (fraction) [ 0, MAX ]"
+
+
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE
   ("src",
    GST_PAD_SRC,
-   GST_PAD_ALWAYS,
+   GST_PAD_REQUEST,
    GST_STATIC_CAPS(SRC_CAPS)
    );
-
 
 #define DEBUG_INIT(bla) \
   GST_DEBUG_CATEGORY_INIT (gst_bayer2rgb2_debug, "bayer2rgb", 0, "bayer2rgb element");
@@ -216,6 +226,7 @@ static gboolean gst_bayer2rgb2_set_caps
 (GstBaseTransform * btrans, GstCaps * incaps, GstCaps * outcaps);
 static gboolean gst_bayer2rgb2_get_unit_size (GstBaseTransform * base,
 				     GstCaps * caps, guint * size);
+typedef void (*GstBayer2rgb2ProcessFunc) (GstBayer2rgb2 *, guint8 *, guint);
 
 static GType
 gst_methode_pattern_get_type (int flag)
@@ -317,16 +328,16 @@ gst_bayer2rgb2_get_unit_size (GstBaseTransform * base, GstCaps * caps,
       /* Our name must be either video/x-raw-bayer video/x-raw-rgb */
       if (strcmp (name, "video/x-raw-rgb"))
 	    {
-            /* For bayer, we handle only BA81 (BGGR), which is BPP=24 */
-	        *size = GST_ROUND_UP_4 (width) * height;
-	        return TRUE;
+	    /* For bayer, we handle only BA81 (BGGR), which is BPP=24 */
+		*size = GST_ROUND_UP_4 (width) * height;
+		return TRUE;
 	    }
       else
 	    {
-            /* For output, calculate according to format */
-            gst_structure_get_int (structure, "bpp", &pixsize);
-	        *size = width * height * (pixsize / 8);
-	        return TRUE;
+	    /* For output, calculate according to format */
+	    gst_structure_get_int (structure, "bpp", &pixsize);
+		*size = width * height * (pixsize / 8);
+		return TRUE;
 	    }
     }
   GST_ELEMENT_ERROR (base, CORE, NEGOTIATION, (NULL),
@@ -343,9 +354,10 @@ static GstCaps *gst_bayer2rgb2_transform_caps
 
     GST_DEBUG_OBJECT (caps, "transforming caps (from)");
   structure = gst_caps_get_structure (caps, 0);
+
   if (direction == GST_PAD_SRC)
     newcaps = gst_caps_from_string ("video/x-raw-bayer,"
-        "format=(string){gbrg, bggr,grbg,rggb}");
+	"format=(string){bggr,grbg,gbrg,rggb}");
   else
     newcaps = gst_caps_new_simple ("video/x-raw-rgb", NULL);
   newstruct = gst_caps_get_structure (newcaps, 0);
@@ -388,23 +400,22 @@ static gboolean gst_bayer2rgb2_set_caps
     int val, bpp;
     const char *format;
 
-    GST_DEBUG ("in caps %" GST_PTR_FORMAT " out caps %" GST_PTR_FORMAT, incaps,
-          outcaps);
+    GST_DEBUG ("in caps %" GST_PTR_FORMAT " out caps %" GST_PTR_FORMAT, incaps, outcaps);
     structure = gst_caps_get_structure (incaps, 0);
     gst_structure_get_int (structure, "width", &bayer2rgb2->width);
     gst_structure_get_int (structure, "height", &bayer2rgb2->height);
     bayer2rgb2->stride = GST_ROUND_UP_4 (bayer2rgb2->width);
     format = gst_structure_get_string (structure, "format");
     if (g_str_equal (format, "bggr"))
-        bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_BGGR;
+	    bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_BGGR;
     else if (g_str_equal (format, "gbrg"))
-        bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_GBRG;
+	    bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_GBRG;
     else if (g_str_equal (format, "grbg"))
-        bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_GRBG;
+	    bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_GRBG;
     else if (g_str_equal (format, "rggb"))
-        bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_RGGB;
+	    bayer2rgb2->format = GST_BAYER_2_RGB_FORMAT_RGGB;
     else
-        return FALSE;
+	    return FALSE;
 
     /* To cater for different RGB formats, we need to set params for later */
     structure = gst_caps_get_structure (outcaps, 0);
@@ -429,7 +440,6 @@ gst_bayer2rgb2_reset (GstBayer2rgb2 * filter)
   filter->r_off = 0;
   filter->g_off = 0;
   filter->b_off = 0;
-  filter->header = 0;
   filter->methode = 0;
   filter->format = 0;
   filter->bpp = FALSE;
@@ -496,9 +506,9 @@ uint8_t	*bayer2rgb2(GstBayer2rgb2 *filter, uint8_t *input, uint8_t *output)
 	    uint32_t	i = 0;
 	    for(i = 0; i < in_size; i += 2)
 	    {
-	        tmp = *(((uint8_t*)input) + i);
-	        *(((uint8_t*)input) + i) = *(((uint8_t*)input) + i + 1);
-	        *(((uint8_t*)input) + i + 1) = tmp;
+		tmp = *(((uint8_t*)input) + i);
+		*(((uint8_t*)input) + i) = *(((uint8_t*)input) + i + 1);
+		*(((uint8_t*)input) + i + 1) = tmp;
 	    }
       }
       dc1394_bayer_decoding_16bit((const uint16_t*)input, (uint16_t*)output, filter->width, filter->height, filter->format, filter->methode, 16);
@@ -515,306 +525,159 @@ uint8_t	*bayer2rgb2(GstBayer2rgb2 *filter, uint8_t *input, uint8_t *output)
 #define	BLUE	2               /* Pure blue element */
 #define	GREENR	3               /* Green element which is on a red line */
 
-static int
-get_pixel_type (GstBayer2rgb2 * filter, int x, int y)
-{
-  int type;
-
-  if (((x ^ filter->format) & 1)) {
-    if ((y ^ (filter->format >> 1)) & 1)
-      type = RED;
-    else
-      type = GREENB;
-  } else {
-    if ((y ^ (filter->format >> 1)) & 1)
-      type = GREENR;
-    else
-      type = BLUE;
-  }
-  return type;
-}
-
-/* Routine to generate the top and bottom edges (not including corners) */
 static void
-hborder (uint8_t * input, uint8_t * output, int bot_top,
-    int typ, GstBayer2rgb2 * filter)
+gst_bayer2rgb_split_and_upsample_horiz (guint8 * dest0, guint8 * dest1,
+    const guint8 * src, int n)
 {
-  uint8_t *op;                  /* output pointer */
-  uint8_t *ip;                  /* input pointer */
-  uint8_t *nx;                  /* next line pointer */
-  int ix;                       /* loop index */
+  int i;
 
-  op = output + (bot_top * filter->width * (filter->height - 1) + 1) *
-      filter->pixsize;
-  ip = input + bot_top * filter->stride * (filter->height - 1);
-  /* calculate minus or plus one line, depending upon bot_top flag */
-  nx = ip + (1 - 2 * bot_top) * filter->stride;
-  /* Stepping horizontally */
-  for (ix = 1; ix < filter->width - 1; ix++, op += filter->pixsize) {
-    switch (typ) {
-      case RED:
-        op[filter->r_off] = ip[ix];
-        op[filter->g_off] = (ip[ix + 1] + ip[ix - 1] + nx[ix] + 1) / 3;
-        op[filter->b_off] = (nx[ix + 1] + nx[ix - 1] + 1) / 2;
-        typ = GREENR;
-        break;
-      case GREENR:
-        op[filter->r_off] = (ip[ix + 1] + ip[ix - 1] + 1) / 2;
-        op[filter->g_off] = ip[ix];
-        op[filter->b_off] = nx[ix];
-        typ = RED;
-        break;
-      case GREENB:
-        op[filter->r_off] = nx[ix];
-        op[filter->g_off] = ip[ix];
-        op[filter->b_off] = (ip[ix + 1] + ip[ix - 1] + 1) / 2;
-        typ = BLUE;
-        break;
-      case BLUE:
-        op[filter->r_off] = (nx[ix + 1] + nx[ix - 1] + 1) / 2;
-        op[filter->g_off] = (ip[ix + 1] + ip[ix - 1] + nx[ix] + 1) / 3;
-        op[filter->b_off] = ip[ix];
-        typ = GREENB;
-        break;
+  dest0[0] = src[0];
+  dest1[0] = src[1];
+  dest0[1] = (src[0] + src[2] + 1) >> 1;
+  dest1[1] = src[1];
+
+#if defined(__i386__) || defined(__amd64__)
+  gst_bayer_horiz_upsample_unaligned (dest0 + 2, dest1 + 2, src + 1,
+      (n - 4) >> 1);
+#else
+  gst_bayer_horiz_upsample (dest0 + 2, dest1 + 2, src + 2, (n - 4) >> 1);
+#endif
+
+  for (i = n - 2; i < n; i++) {
+    if ((i & 1) == 0) {
+      dest0[i] = src[i];
+      dest1[i] = src[i - 1];
+    } else {
+      dest0[i] = src[i - 1];
+      dest1[i] = src[i];
     }
   }
 }
 
-/* Routine to generate the left and right edges, not including corners */
-static void
-vborder (uint8_t * input, uint8_t * output, int right_left,
-    int typ, GstBayer2rgb2 * filter)
-{
-  uint8_t *op;                  /* output pointer */
-  uint8_t *ip;                  /* input pointer */
-  uint8_t *la;                  /* line above pointer */
-  uint8_t *lb;                  /* line below pointer */
-  int ix;                       /* loop index */
-  int lr;                       /* 'left-right' flag - +1 is right, -1 is left */
+typedef void (*process_func) (guint8 * d0, const guint8 * s0, const guint8 * s1,
+    const guint8 * s2, const guint8 * s3, const guint8 * s4, const guint8 * s5,
+    int n);
 
-  lr = (1 - 2 * right_left);
-  /* stepping vertically */
-  for (ix = 1; ix < filter->height - 1; ix++) {
-    ip = input + right_left * (filter->width - 1) + ix * filter->stride;
-    op = output + (right_left * (filter->width - 1) + ix * filter->width) *
-        filter->pixsize;
-    la = ip + filter->stride;
-    lb = ip - filter->stride;
-    switch (typ) {
-      case RED:
-        op[filter->r_off] = ip[0];
-        op[filter->g_off] = (la[0] + ip[lr] + lb[0] + 1) / 3;
-        op[filter->b_off] = (la[lr] + lb[lr] + 1) / 2;
-        typ = GREENB;
-        break;
-      case GREENR:
-        op[filter->r_off] = ip[lr];
-        op[filter->g_off] = ip[0];
-        op[filter->b_off] = (la[lr] + lb[lr] + 1) / 2;
-        typ = BLUE;
-        break;
-      case GREENB:
-        op[filter->r_off] = (la[lr] + lb[lr] + 1) / 2;
-        op[filter->g_off] = ip[0];
-        op[filter->b_off] = ip[lr];
-        typ = RED;
-        break;
-      case BLUE:
-        op[filter->r_off] = (la[lr] + lb[lr] + 1) / 2;
-        op[filter->g_off] = (la[0] + ip[lr] + lb[0] + 1) / 3;
-        op[filter->b_off] = ip[0];
-        typ = GREENR;
-        break;
+static void
+gst_bayer2rgb_process (GstBayer2rgb2 *bayer2rgb, uint8_t *dest,
+    int dest_stride, uint8_t *src, int src_stride)
+{
+  int j;
+  guint8 *tmp;
+  process_func merge[2] = { NULL, NULL };
+  int r_off, g_off, b_off;
+
+  /* We exploit some symmetry in the functions here.  The base functions
+   * are all named for the BGGR arrangement.  For RGGB, we swap the
+   * red offset and blue offset in the output.  For GRBG, we swap the
+   * order of the merge functions.  For GBRG, do both. */
+
+  r_off = bayer2rgb->r_off;
+  g_off = bayer2rgb->g_off;
+  b_off = bayer2rgb->b_off;
+  if (bayer2rgb->format == GST_BAYER_2_RGB_FORMAT_RGGB ||
+      bayer2rgb->format == GST_BAYER_2_RGB_FORMAT_GBRG) {
+    r_off = bayer2rgb->b_off;
+    b_off = bayer2rgb->r_off;
+  }
+
+  if (r_off == 2 && g_off == 1 && b_off == 0) {
+    merge[0] = gst_bayer_merge_bg_bgra;
+    merge[1] = gst_bayer_merge_gr_bgra;
+  } else if (r_off == 3 && g_off == 2 && b_off == 1) {
+    merge[0] = gst_bayer_merge_bg_abgr;
+    merge[1] = gst_bayer_merge_gr_abgr;
+  } else if (r_off == 1 && g_off == 2 && b_off == 3) {
+    merge[0] = gst_bayer_merge_bg_argb;
+    merge[1] = gst_bayer_merge_gr_argb;
+  } else if (r_off == 0 && g_off == 1 && b_off == 2) {
+    merge[0] = gst_bayer_merge_bg_rgba;
+    merge[1] = gst_bayer_merge_gr_rgba;
+  }
+  if (bayer2rgb->format == GST_BAYER_2_RGB_FORMAT_GRBG ||
+      bayer2rgb->format == GST_BAYER_2_RGB_FORMAT_GBRG) {
+    process_func tmp = merge[0];
+    merge[0] = merge[1];
+    merge[1] = tmp;
+  }
+
+  tmp = g_malloc (2 * 4 * bayer2rgb->width);
+#define LINE(x) (tmp + ((x)&7) * bayer2rgb->width)
+
+  gst_bayer2rgb_split_and_upsample_horiz (LINE (3 * 2 + 0), LINE (3 * 2 + 1),
+      src + 1 * src_stride, bayer2rgb->width);
+  j = 0;
+  gst_bayer2rgb_split_and_upsample_horiz (LINE (j * 2 + 0), LINE (j * 2 + 1),
+      src + j * src_stride, bayer2rgb->width);
+
+  for (j = 0; j < bayer2rgb->height; j++) {
+    if (j < bayer2rgb->height - 1) {
+      gst_bayer2rgb_split_and_upsample_horiz (LINE ((j + 1) * 2 + 0),
+	  LINE ((j + 1) * 2 + 1), src + (j + 1) * src_stride, bayer2rgb->width);
     }
+
+    merge[j & 1] (dest + j * dest_stride,
+	LINE (j * 2 - 2), LINE (j * 2 - 1),
+	LINE (j * 2 + 0), LINE (j * 2 + 1),
+	LINE (j * 2 + 2), LINE (j * 2 + 3), bayer2rgb->width >> 1);
   }
+  g_free (tmp);
 }
 
-/* Produce the four (top, bottom, left, right) edges */
-static void
-do_row0_col0 (uint8_t * input, uint8_t * output, GstBayer2rgb2 * filter)
+static void test_convert32bit(GstBayer2rgb2 * filter, GstBuffer *inbuf, uint8_t *tmp, GstBuffer *outbuf)
 {
-  /* Horizontal edges */
-  hborder (input, output, 0, get_pixel_type (filter, 1, 0), filter);
-  hborder (input, output, 1, get_pixel_type (filter, 1, filter->height - 1),
-      filter);
+    uint8_t *d;
+    int src_wrap, dst_wrap, j, y;
 
-  /* Vertical edges */
-  vborder (input, output, 0, get_pixel_type (filter, 0, 1), filter);
-  vborder (input, output, 1, get_pixel_type (filter, filter->width - 1, 1),
-      filter);
-}
-
-static void
-corner (uint8_t * input, uint8_t * output, int x, int y,
-    int xd, int yd, int typ, GstBayer2rgb2 * filter)
-{
-  uint8_t *ip;                  /* input pointer */
-  uint8_t *op;                  /* output pointer */
-  uint8_t *nx;                  /* adjacent line */
-
-  op = output + y * filter->width * filter->pixsize + x * filter->pixsize;
-  ip = input + y * filter->stride + x;
-  nx = ip + yd * filter->stride;
-  switch (typ) {
-    case RED:
-      op[filter->r_off] = ip[0];
-      op[filter->g_off] = (nx[0] + ip[xd] + 1) / 2;
-      op[filter->b_off] = nx[xd];
-      break;
-    case GREENR:
-      op[filter->r_off] = ip[xd];
-      op[filter->g_off] = ip[0];
-      op[filter->b_off] = nx[0];
-      break;
-    case GREENB:
-      op[filter->r_off] = nx[0];
-      op[filter->g_off] = ip[0];
-      op[filter->b_off] = ip[xd];
-      break;
-    case BLUE:
-      op[filter->r_off] = nx[xd];
-      op[filter->g_off] = (nx[0] + ip[xd] + 1) / 2;
-      op[filter->b_off] = ip[0];
-      break;
-  }
-}
-
-static void
-do_corners (uint8_t * input, uint8_t * output, GstBayer2rgb2 * filter)
-{
-  /* Top left */
-  corner (input, output, 0, 0, 1, 1, get_pixel_type (filter, 0, 0), filter);
-  /* Bottom left */
-  corner (input, output, 0, filter->height - 1, 1, -1,
-      get_pixel_type (filter, 0, filter->height - 1), filter);
-  /* Top right */
-  corner (input, output, filter->width - 1, 0, -1, 0,
-      get_pixel_type (filter, filter->width - 1, 0), filter);
-  /* Bottom right */
-  corner (input, output, filter->width - 1, filter->height - 1, -1, -1,
-      get_pixel_type (filter, filter->width - 1, filter->height - 1), filter);
-}
-
-static void
-do_body (uint8_t * input, uint8_t * output, GstBayer2rgb2 * filter)
-{
-  int ip, op;                   /* input and output pointers */
-  int w, h;                     /* loop indices */
-  int type;                     /* calculated colour of current element */
-  int a1, a2;
-  int v1, v2, h1, h2;
-
-  /*
-   * We are processing row (line) by row, starting with the second
-   * row and continuing through the next to last.  Each row is processed
-   * column by column, starting with the second and continuing through
-   * to the next to last.
-   */
-  for (h = 1; h < filter->height - 1; h++) {
-    /*
-     * Remember we are processing "row by row". For each row, we need
-     * to set the type of the first element to be processed.  Since we
-     * have already processed the edges, the "first element" will be
-     * the pixel at position (1,1).  Assuming BG format, this should
-     * be RED for odd-numbered rows and GREENB for even rows.
-     */
-    type = get_pixel_type (filter, 1, h);
-    /* Calculate the starting position for the row */
-    op = h * filter->width * filter->pixsize;   /* output (converted) pos */
-    ip = h * filter->stride;    /* input (bayer data) pos */
-    for (w = 1; w < filter->width - 1; w++) {
-      op += filter->pixsize;    /* we are processing "horizontally" */
-      ip++;
-      switch (type) {
-        case RED:
-          output[op + filter->r_off] = input[ip];
-          output[op + filter->b_off] = (input[ip - filter->stride - 1] +
-              input[ip - filter->stride + 1] +
-              input[ip + filter->stride - 1] +
-              input[ip + filter->stride + 1] + 2) / 4;
-          v1 = input[ip + filter->stride];
-          v2 = input[ip - filter->stride];
-          h1 = input[ip + 1];
-          h2 = input[ip - 1];
-          a1 = abs (v1 - v2);
-          a2 = abs (h1 - h2);
-          if (a1 < a2)
-            output[op + filter->g_off] = (v1 + v2 + 1) / 2;
-          else if (a1 > a2)
-            output[op + filter->g_off] = (h1 + h2 + 1) / 2;
-          else
-            output[op + filter->g_off] = (v1 + h1 + v2 + h2 + 2) / 4;
-          type = GREENR;
-          break;
-        case GREENR:
-          output[op + filter->r_off] = (input[ip + 1] + input[ip - 1] + 1) / 2;
-          output[op + filter->g_off] = input[ip];
-          output[op + filter->b_off] = (input[ip - filter->stride] +
-              input[ip + filter->stride] + 1) / 2;
-          type = RED;
-          break;
-        case GREENB:
-          output[op + filter->r_off] = (input[ip - filter->stride] +
-              input[ip + filter->stride] + 1) / 2;
-          output[op + filter->g_off] = input[ip];
-          output[op + filter->b_off] = (input[ip + 1] + input[ip - 1] + 1) / 2;
-          type = BLUE;
-          break;
-        case BLUE:
-          output[op + filter->r_off] = (input[ip - filter->stride - 1] +
-              input[ip - filter->stride + 1] +
-              input[ip + filter->stride - 1] +
-              input[ip + filter->stride + 1] + 2) / 4;
-          output[op + filter->b_off] = input[ip];
-          v1 = input[ip + filter->stride];
-          v2 = input[ip - filter->stride];
-          h1 = input[ip + 1];
-          h2 = input[ip - 1];
-          a1 = abs (v1 - v2);
-          a2 = abs (h1 - h2);
-          if (a1 < a2)
-            output[op + filter->g_off] = (v1 + v2 + 1) / 2;
-          else if (a1 > a2)
-            output[op + filter->g_off] = (h1 + h2 + 1) / 2;
-          else
-            output[op + filter->g_off] = (v1 + h1 + v2 + h2 + 2) / 4;
-          type = GREENB;
-          break;
-      }
-    }
-  }
+    src_wrap = GST_ROUND_UP_4 (filter->width * 3) - filter->width * 3;
+    d = outbuf->data;
+    dst_wrap = filter->width * 4 - filter->width * 4;
+    for (y = 0; y < filter->height; y++, tmp+=src_wrap, d += dst_wrap)
+        for (j = 0; j < filter->width; j++, tmp+=3, d+=4)
+            ((uint32_t *)(d))[0] = (0xffU << 24) | (tmp[0] << 16) | (tmp[1] << 8) | tmp[2];
 }
 
 static GstFlowReturn
 gst_bayer2rgb2_transform(GstBaseTransform * pad, GstBuffer *inbuf, GstBuffer *outbuf)
 {
     GstBayer2rgb2		*filter;
-    uint8_t		        *input;
-    uint8_t		        *output;
+    uint8_t			    *input;
+    uint8_t			    *output;
+    uint8_t             *tmp;
 
     filter = GST_BAYER2RGB2(pad);
+    /*
+     * We need to lock our filter params to prevent changing
+     * caps in the middle of a transformation (nice way to get
+     * segfaults)
+     */
+    GST_OBJECT_LOCK (filter);
+
+    GST_DEBUG ("transforming buffer");
     input = (uint8_t *) GST_BUFFER_DATA (inbuf);
     output = (uint8_t *) GST_BUFFER_DATA (outbuf);
     if (filter->methode == 0)
-    {
-        do_corners (input, output, filter);
-        do_row0_col0 (input, output, filter);
-        do_body (input, output, filter);
-    }
+	    gst_bayer2rgb_process (filter, output, filter->width * 4, input, filter->width);
     else
     {
-        if (filter->format == GST_BAYER_2_RGB_FORMAT_RGGB)
-            filter->format = (guint16) DC1394_COLOR_FILTER_RGGB;
-        if (filter->format == GST_BAYER_2_RGB_FORMAT_GBRG)
-            filter->format = (guint16) DC1394_COLOR_FILTER_GRBG;
-        if (filter->format == GST_BAYER_2_RGB_FORMAT_GRBG)
-            filter->format = (guint16) DC1394_COLOR_FILTER_GBRG;
-        if (filter->format == GST_BAYER_2_RGB_FORMAT_BGGR)
-            filter->format = (guint16) DC1394_COLOR_FILTER_BGGR;
         if (filter->height > 8 && filter->width > 8)
-            output = bayer2rgb2(filter, input, output);
-    }
-  return GST_FLOW_OK;
+        {
+            tmp = g_malloc(outbuf->size * sizeof(uint8_t*));
+	        if (filter->format == GST_BAYER_2_RGB_FORMAT_RGGB)
+	            filter->format = (guint16) DC1394_COLOR_FILTER_RGGB;
+	        else if (filter->format == GST_BAYER_2_RGB_FORMAT_GBRG)
+	            filter->format = (guint16) DC1394_COLOR_FILTER_GRBG;
+	        else if (filter->format == GST_BAYER_2_RGB_FORMAT_GRBG)
+	            filter->format = (guint16) DC1394_COLOR_FILTER_GBRG;
+            else if (filter->format == GST_BAYER_2_RGB_FORMAT_BGGR)
+                filter->format = (guint16) DC1394_COLOR_FILTER_BGGR;
+	        output = bayer2rgb2(filter, input, tmp);
+            test_convert32bit(filter, inbuf, tmp, outbuf);
+            g_free(tmp);
+        }
+   }
+    GST_OBJECT_UNLOCK (filter);
+    return GST_FLOW_OK;
 }
 
 static gboolean
