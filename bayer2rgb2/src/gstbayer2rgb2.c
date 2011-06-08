@@ -1,33 +1,12 @@
 /*
  * GStreamer
+ * Copyright (C) 2007 David Schleef <ds@schleef.org>
+ * Copyright (C) 2009 Florent Thiery <florent.thiery@ubicast.eu>
  * Copyright (C) 2009 Anthony Violo <anthony.violo@ubicast.eu>
  * Bayer pattern decoding functions from libdc1394 project
  * ("http://damien.douxchamps.net/ieee1394/libdc1394/"), written by
  * Damien Douxchamps and Frederic Devernay; the original VNG and AHD Bayer
  * decoding are from Dave Coffin's DCRAW.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- *
- * Alternatively, the contents of this file may be used under the
- * GNU Lesser General Public License Version 2.1 (the "LGPL"), in
- * which case the following provisions apply instead of the ones
- * mentioned above:
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -43,6 +22,8 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
+ * March 2008
+ * Logic enhanced by William Brack <wbrack@mmm.com.hk>
  */
 
 /**
@@ -173,19 +154,12 @@ enum
 static const GstElementDetails gst_alpha_color_details =
 GST_ELEMENT_DETAILS
   (
-   "Bayer to RGB conversion filter",
-   "Filter/Effect/Video",
+   "Bayer to RGB decoder for cameras Filter/Converter/Video",
+   "Converts video/x-raw-bayer to video/x-raw-rgb",
    "Converts raw bayer data to RGB images with selectable demosaicing methods and JP46 (Elphel) mode support",
-   "Anthony Violo <anthony.violo@ubicast.eu>"
+   "William Brack <wbrack@mmm.com.hk>, Anthony Violo <anthony.violo@ubicast.eu>"
    );
-/*
-static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE
-  ("src",
-   GST_PAD_SRC,
-   GST_PAD_REQUEST,
-   GST_STATIC_CAPS(SRC_CAPS)
-   );
-*/
+
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE
   ("sink",
    GST_PAD_SINK,
@@ -692,12 +666,12 @@ bayer2rgb2_init (GstPlugin * bayer2rgb2)
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "bayer2rgb2",
-    "Converts raw bayer data to rgb images",
+    "bayer",
+    "Elements to convert Bayer images",
     bayer2rgb2_init,
     VERSION,
-    "LGPL",
-    "GStreamer",
-    "http://www.ubicast.eu/"
+    GST_LICENSE,
+    GST_PACKAGE_NAME,
+    GST_PACKAGE_ORIGIN
 )
 
