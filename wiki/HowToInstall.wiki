@@ -23,6 +23,10 @@ From your gst-plugins-elphel directory:
 
 From your gst-plugins-elphel directory:
   * cd bayer2rgb2
+  * With edgesence method :
+     ./configure --enable-orc --enable-edgesence
+  * Without edgesence method :
+     ./configure --enable-orc
   * ./autogen.sh
   * make
   * cp /src/.libs/libgstbayer2rgb2.so ~/.gstreamer-0.10/plugins$
