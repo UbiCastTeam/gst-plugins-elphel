@@ -1,10 +1,11 @@
 = Requirements =
 
-Tested on Ubuntu 8.10
+Tested on Ubuntu 10.04 / gstreamer-0.10.34
 
 To compile, additionally to the basic development tools (from build-essential, automake, autoconf, libtool), you will need (from apt on Ubuntu/Debian systems):
   * libgstreamer-plugins-base0.10-dev
   * libgstreamer0.10-dev
+  * liborc-dev (>= 0.4)
 
 = Get the source =
 
@@ -23,7 +24,7 @@ From your gst-plugins-elphel directory:
 
 From your gst-plugins-elphel directory:
   * cd bayer2rgb2
-  * With edgesence method :
+  * With edgesence method (disabled by default: *patent-protected in the U.S.*) :
      ./configure --enable-orc --enable-edgesence
   * Without edgesence method :
      ./configure --enable-orc
