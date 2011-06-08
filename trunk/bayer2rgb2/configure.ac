@@ -31,6 +31,14 @@ AC_PROG_LIBTOOL
 dnl Orc
 ORC_CHECK([0.4.11])
 
+AC_GST_ARG_WITH_PACKAGE_NAME
+AC_GST_ARG_WITH_PACKAGE_ORIGIN
+
+dnl set license and copyright notice
+GST_LICENSE="LGPL"
+AC_DEFINE_UNQUOTED(GST_LICENSE, "$GST_LICENSE", [GStreamer license])
+AC_SUBST(GST_LICENSE)
+
 dnl decide on error flags
 AS_COMPILER_FLAG(-Wall -lefenz, GST_WALL="yes", GST_WALL="no")
 if test "x$GST_WALL" = "xyes"; then
@@ -129,3 +137,4 @@ AC_SUBST(GST_PLUGIN_LDFLAGS)
 
 AC_OUTPUT(Makefile m4/Makefile src/Makefile)
 ORC_OUTPUT
+

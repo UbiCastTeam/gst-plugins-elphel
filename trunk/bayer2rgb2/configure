@@ -696,7 +696,7 @@ MFLAGS=
 MAKEFLAGS=
 
 # Identity of this package.
-PACKAGE_NAME=
+PACKAGE_NAME='GStreamer Bad Plug-ins'
 PACKAGE_TARNAME=
 PACKAGE_VERSION=
 PACKAGE_STRING=
@@ -755,6 +755,9 @@ GST_MAJORMINOR
 GST_LIBS
 GST_CFLAGS
 HAVE_PKGCONFIG
+GST_LICENSE
+GST_PACKAGE_ORIGIN
+GST_PACKAGE_NAME
 HAVE_ORCC_FALSE
 HAVE_ORCC_TRUE
 HAVE_ORC_FALSE
@@ -10745,7 +10748,71 @@ else
   HAVE_ORCC_FALSE=
 fi
 
+GST_LICENSE="LGPL"
 
+cat >>confdefs.h <<_ACEOF
+#define GST_LICENSE "$GST_LICENSE"
+_ACEOF
+
+# Check whether --with-package-name was given.
+if test "${with_package_name+set}" = set; then :
+  withval=$with_package_name;
+      case "${withval}" in
+	yes) as_fn_error "bad value ${withval} for --with-package-name" "$LINENO" 5 ;;
+	no)  as_fn_error "bad value ${withval} for --with-package-name" "$LINENO" 5 ;;
+	*)   GST_PACKAGE_NAME="${withval}" ;;
+      esac
+
+else
+
+      P=
+      if test "x$P" = "x"
+      then
+	P=$PACKAGE_NAME
+      fi
+
+      if test "x$PACKAGE_VERSION_NANO" = "x0"
+      then
+	GST_PACKAGE_NAME="$P source release"
+      else
+	if test "x$PACKAGE_VERSION_NANO" = "x1"
+	then
+	  GST_PACKAGE_NAME="$P git"
+	else
+	  GST_PACKAGE_NAME="$P prerelease"
+	fi
+      fi
+
+
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Using $GST_PACKAGE_NAME as package name" >&5
+$as_echo "$as_me: Using $GST_PACKAGE_NAME as package name" >&6;}
+
+cat >>confdefs.h <<_ACEOF
+#define GST_PACKAGE_NAME "$GST_PACKAGE_NAME"
+_ACEOF
+
+
+# Check whether --with-package-origin was given.
+if test "${with_package_origin+set}" = set; then :
+  withval=$with_package_origin;
+      case "${withval}" in
+	yes) as_fn_error "bad value ${withval} for --with-package-origin" "$LINENO" 5 ;;
+	no)  as_fn_error "bad value ${withval} for --with-package-origin" "$LINENO" 5 ;;
+	*)   GST_PACKAGE_ORIGIN="${withval}" ;;
+      esac
+
+else
+  GST_PACKAGE_ORIGIN="Unknown package origin"
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Using $GST_PACKAGE_ORIGIN as package origin" >&5
+$as_echo "$as_me: Using $GST_PACKAGE_ORIGIN as package origin" >&6;}
+
+cat >>confdefs.h <<_ACEOF
+#define GST_PACKAGE_ORIGIN "$GST_PACKAGE_ORIGIN"
+_ACEOF
 
 
 
