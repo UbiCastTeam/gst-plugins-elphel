@@ -27,11 +27,11 @@
 # gstadderorc.orc.
 #
 # When 'make dist' is run at the top level, or 'make orc-update'
-# in a directory including this fragment, the generated source
+# in a directory including this fragment, the generated source 
 # files will be copied to $(ORC_SOURCE)-dist.[ch].  These files
 # should be checked in to git, since they are used if Orc is
 # disabled.
-#
+# 
 # Note that this file defines BUILT_SOURCES, so any later usage
 # of BUILT_SOURCES in the Makefile.am that includes this file
 # must use '+='.
@@ -103,7 +103,10 @@ am__objects_1 = libgstbayer2rgb2_la-tmp-orc.lo
 nodist_libgstbayer2rgb2_la_OBJECTS = $(am__objects_1)
 libgstbayer2rgb2_la_OBJECTS = $(am_libgstbayer2rgb2_la_OBJECTS) \
 	$(nodist_libgstbayer2rgb2_la_OBJECTS)
-libgstbayer2rgb2_la_LINK = $(LIBTOOL) --tag=CC \
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+libgstbayer2rgb2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) \
 	$(libgstbayer2rgb2_la_LDFLAGS) $(LDFLAGS) -o $@
@@ -113,13 +116,26 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libgstbayer2rgb2_la_SOURCES) \
 	$(nodist_libgstbayer2rgb2_la_SOURCES)
 DIST_SOURCES = $(libgstbayer2rgb2_la_SOURCES)
@@ -130,6 +146,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ACLOCAL_AMFLAGS = @ACLOCAL_AMFLAGS@
 AMTAR = @AMTAR@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -161,9 +178,9 @@ GST_BASE_LIBS = @GST_BASE_LIBS@
 GST_CFLAGS = @GST_CFLAGS@
 GST_LIBS = @GST_LIBS@
 GST_LICENSE = @GST_LICENSE@
+GST_MAJORMINOR = @GST_MAJORMINOR@
 GST_PACKAGE_NAME = @GST_PACKAGE_NAME@
 GST_PACKAGE_ORIGIN = @GST_PACKAGE_ORIGIN@
-GST_MAJORMINOR = @GST_MAJORMINOR@
 GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GST_PLUGIN_VERSION = @GST_PLUGIN_VERSION@
 GST_PLUGIN_VERSION_MAJOR = @GST_PLUGIN_VERSION_MAJOR@
@@ -276,6 +293,8 @@ EXTRA_DIST = $(ORC_SOURCE).orc
 ORC_NODIST_SOURCES = tmp-orc.c $(ORC_SOURCE).h
 BUILT_SOURCES = tmp-orc.c $(ORC_SOURCE).h
 orcc_v_gen = $(orcc_v_gen_$(V))
+orcc_v_gen_ = $(orcc_v_gen_$(AM_DEFAULT_VERBOSITY))
+orcc_v_gen_0 = @echo "  ORCC   $@";
 cp_v_gen = $(cp_v_gen_$(V))
 cp_v_gen_ = $(cp_v_gen_$(AM_DEFAULT_VERBOSITY))
 cp_v_gen_0 = @echo "  CP     $@";
@@ -320,7 +339,7 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
 	      ( cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh ) \
-		&& { if test -f $@; then exit 0; else break; fi; }; \
+	        && { if test -f $@; then exit 0; else break; fi; }; \
 	      exit 1;; \
 	  esac; \
 	done; \
@@ -376,8 +395,8 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libgstbayer2rgb2.la: $(libgstbayer2rgb2_la_OBJECTS) $(libgstbayer2rgb2_la_DEPENDENCIES)
-	$(libgstbayer2rgb2_la_LINK) -rpath $(plugindir) $(libgstbayer2rgb2_la_OBJECTS) $(libgstbayer2rgb2_la_LIBADD) $(LIBS)
+libgstbayer2rgb2.la: $(libgstbayer2rgb2_la_OBJECTS) $(libgstbayer2rgb2_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libgstbayer2rgb2_la_LINK) -rpath $(plugindir) $(libgstbayer2rgb2_la_OBJECTS) $(libgstbayer2rgb2_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -390,46 +409,52 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbayer2rgb2_la-tmp-orc.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 libgstbayer2rgb2_la-gstbayer2rgb2.lo: gstbayer2rgb2.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -MT libgstbayer2rgb2_la-gstbayer2rgb2.lo -MD -MP -MF $(DEPDIR)/libgstbayer2rgb2_la-gstbayer2rgb2.Tpo -c -o libgstbayer2rgb2_la-gstbayer2rgb2.lo `test -f 'gstbayer2rgb2.c' || echo '$(srcdir)/'`gstbayer2rgb2.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libgstbayer2rgb2_la-gstbayer2rgb2.Tpo $(DEPDIR)/libgstbayer2rgb2_la-gstbayer2rgb2.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -MT libgstbayer2rgb2_la-gstbayer2rgb2.lo -MD -MP -MF $(DEPDIR)/libgstbayer2rgb2_la-gstbayer2rgb2.Tpo -c -o libgstbayer2rgb2_la-gstbayer2rgb2.lo `test -f 'gstbayer2rgb2.c' || echo '$(srcdir)/'`gstbayer2rgb2.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstbayer2rgb2_la-gstbayer2rgb2.Tpo $(DEPDIR)/libgstbayer2rgb2_la-gstbayer2rgb2.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstbayer2rgb2.c' object='libgstbayer2rgb2_la-gstbayer2rgb2.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -c -o libgstbayer2rgb2_la-gstbayer2rgb2.lo `test -f 'gstbayer2rgb2.c' || echo '$(srcdir)/'`gstbayer2rgb2.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -c -o libgstbayer2rgb2_la-gstbayer2rgb2.lo `test -f 'gstbayer2rgb2.c' || echo '$(srcdir)/'`gstbayer2rgb2.c
 
 libgstbayer2rgb2_la-bayer.lo: bayer.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -MT libgstbayer2rgb2_la-bayer.lo -MD -MP -MF $(DEPDIR)/libgstbayer2rgb2_la-bayer.Tpo -c -o libgstbayer2rgb2_la-bayer.lo `test -f 'bayer.c' || echo '$(srcdir)/'`bayer.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libgstbayer2rgb2_la-bayer.Tpo $(DEPDIR)/libgstbayer2rgb2_la-bayer.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -MT libgstbayer2rgb2_la-bayer.lo -MD -MP -MF $(DEPDIR)/libgstbayer2rgb2_la-bayer.Tpo -c -o libgstbayer2rgb2_la-bayer.lo `test -f 'bayer.c' || echo '$(srcdir)/'`bayer.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstbayer2rgb2_la-bayer.Tpo $(DEPDIR)/libgstbayer2rgb2_la-bayer.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bayer.c' object='libgstbayer2rgb2_la-bayer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -c -o libgstbayer2rgb2_la-bayer.lo `test -f 'bayer.c' || echo '$(srcdir)/'`bayer.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -c -o libgstbayer2rgb2_la-bayer.lo `test -f 'bayer.c' || echo '$(srcdir)/'`bayer.c
 
 libgstbayer2rgb2_la-tmp-orc.lo: tmp-orc.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -MT libgstbayer2rgb2_la-tmp-orc.lo -MD -MP -MF $(DEPDIR)/libgstbayer2rgb2_la-tmp-orc.Tpo -c -o libgstbayer2rgb2_la-tmp-orc.lo `test -f 'tmp-orc.c' || echo '$(srcdir)/'`tmp-orc.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libgstbayer2rgb2_la-tmp-orc.Tpo $(DEPDIR)/libgstbayer2rgb2_la-tmp-orc.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -MT libgstbayer2rgb2_la-tmp-orc.lo -MD -MP -MF $(DEPDIR)/libgstbayer2rgb2_la-tmp-orc.Tpo -c -o libgstbayer2rgb2_la-tmp-orc.lo `test -f 'tmp-orc.c' || echo '$(srcdir)/'`tmp-orc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstbayer2rgb2_la-tmp-orc.Tpo $(DEPDIR)/libgstbayer2rgb2_la-tmp-orc.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tmp-orc.c' object='libgstbayer2rgb2_la-tmp-orc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -c -o libgstbayer2rgb2_la-tmp-orc.lo `test -f 'tmp-orc.c' || echo '$(srcdir)/'`tmp-orc.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstbayer2rgb2_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbayer2rgb2_la_CFLAGS) $(CFLAGS) -c -o libgstbayer2rgb2_la-tmp-orc.lo `test -f 'tmp-orc.c' || echo '$(srcdir)/'`tmp-orc.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -686,4 +711,3 @@ dist-hook-orc: tmp-orc.c $(ORC_SOURCE).h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-

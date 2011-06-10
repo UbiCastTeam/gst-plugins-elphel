@@ -14,9 +14,6 @@ dnl releases only do Wall, cvs and prerelease does Werror too
 AS_VERSION(gst-bayer2rgb2, GST_PLUGIN_VERSION, 0, 10, 0, 1,
     GST_PLUGIN_CVS="no", GST_PLUGIN_CVS="yes")
 
-dnl AM_MAINTAINER_MODE provides the option to enable maintainer mode
-AM_MAINTAINER_MODE
-
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 
 dnl make aclocal work in maintainer mode
@@ -24,20 +21,41 @@ AC_SUBST(ACLOCAL_AMFLAGS, "-I m4")
 
 AM_CONFIG_HEADER(config.h)
 
+dnl AM_MAINTAINER_MODE only provides the option to configure to enable it
+AM_MAINTAINER_MODE
+
+dnl sets host_* variables
+AC_CANONICAL_HOST
+
+dnl use pretty build output with automake >= 1.11
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])],
+  [AM_DEFAULT_VERBOSITY=1
+   AC_SUBST(AM_DEFAULT_VERBOSITY)])
+
 dnl check for tools
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
+AG_GST_ARG_WITH_PACKAGE_NAME
+AG_GST_ARG_WITH_PACKAGE_ORIGIN
+
 dnl Orc
 ORC_CHECK([0.4.11])
-
-AC_GST_ARG_WITH_PACKAGE_NAME
-AC_GST_ARG_WITH_PACKAGE_ORIGIN
 
 dnl set license and copyright notice
 GST_LICENSE="LGPL"
 AC_DEFINE_UNQUOTED(GST_LICENSE, "$GST_LICENSE", [GStreamer license])
 AC_SUBST(GST_LICENSE)
+
+dnl set name
+GST_PACKAGE_NAME="GSTREAMER"
+AC_DEFINE_UNQUOTED(GST_PACKAGE_NAME, "$GST_PACKAGE_NAME", [GStreamer])
+AC_SUBST(GST_PACKAGE_NAME)
+
+dnl set origin
+GST_PACKAGE_ORIGIN="http://gstreamer.net/"
+AC_DEFINE_UNQUOTED(GST_PACKAGE_ORIGIN, "$GST_PACKAGE_ORIGIN", [GStreamer])
+AC_SUBST(GST_PACKAGE_ORIGIN)
 
 dnl decide on error flags
 AS_COMPILER_FLAG(-Wall -lefenz, GST_WALL="yes", GST_WALL="no")
