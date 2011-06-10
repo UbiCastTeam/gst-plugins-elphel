@@ -3,6 +3,15 @@
 /* Disable Orc */
 #undef DISABLE_ORC
 
+/* GStreamer license */
+#undef GST_LICENSE
+
+/* GStreamer */
+#undef GST_PACKAGE_NAME
+
+/* GStreamer */
+#undef GST_PACKAGE_ORIGIN
+
 /* Define the version */
 #undef GST_PLUGIN_VERSION
 
@@ -20,15 +29,6 @@
 
 /* Use Orc */
 #undef HAVE_ORC
-
-/* GStreamer license */
-#undef GST_LICENSE
-
-/* package name in plugins */
-#undef GST_PACKAGE_NAME
-
-/* package origin */
-#undef GST_PACKAGE_ORIGIN
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -81,4 +81,3 @@
 
 /* Version number of package */
 #undef VERSION
-

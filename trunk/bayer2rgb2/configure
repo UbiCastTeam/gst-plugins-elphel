@@ -573,7 +573,7 @@ if test -z "$lt_ECHO"; then
       if { echo_test_string=`eval $cmd`; } 2>/dev/null &&
 	 { test "X$echo_test_string" = "X$echo_test_string"; } 2>/dev/null
       then
-	break
+        break
       fi
     done
   fi
@@ -593,11 +593,11 @@ if test -z "$lt_ECHO"; then
     for dir in $PATH /usr/ucb; do
       IFS="$lt_save_ifs"
       if (test -f $dir/echo || test -f $dir/echo$ac_exeext) &&
-	 test "X`($dir/echo '\t') 2>/dev/null`" = 'X\t' &&
-	 echo_testing_string=`($dir/echo "$echo_test_string") 2>/dev/null` &&
-	 test "X$echo_testing_string" = "X$echo_test_string"; then
-	ECHO="$dir/echo"
-	break
+         test "X`($dir/echo '\t') 2>/dev/null`" = 'X\t' &&
+         echo_testing_string=`($dir/echo "$echo_test_string") 2>/dev/null` &&
+         test "X$echo_testing_string" = "X$echo_test_string"; then
+        ECHO="$dir/echo"
+        break
       fi
     done
     IFS="$lt_save_ifs"
@@ -605,27 +605,27 @@ if test -z "$lt_ECHO"; then
     if test "X$ECHO" = Xecho; then
       # We didn't find a better echo, so look for alternatives.
       if test "X`{ print -r '\t'; } 2>/dev/null`" = 'X\t' &&
-	 echo_testing_string=`{ print -r "$echo_test_string"; } 2>/dev/null` &&
-	 test "X$echo_testing_string" = "X$echo_test_string"; then
-	# This shell has a builtin print -r that does the trick.
-	ECHO='print -r'
+         echo_testing_string=`{ print -r "$echo_test_string"; } 2>/dev/null` &&
+         test "X$echo_testing_string" = "X$echo_test_string"; then
+        # This shell has a builtin print -r that does the trick.
+        ECHO='print -r'
       elif { test -f /bin/ksh || test -f /bin/ksh$ac_exeext; } &&
 	   test "X$CONFIG_SHELL" != X/bin/ksh; then
-	# If we have ksh, try running configure again with it.
-	ORIGINAL_CONFIG_SHELL=${CONFIG_SHELL-/bin/sh}
-	export ORIGINAL_CONFIG_SHELL
-	CONFIG_SHELL=/bin/ksh
-	export CONFIG_SHELL
-	exec $CONFIG_SHELL "$0" --no-reexec ${1+"$@"}
+        # If we have ksh, try running configure again with it.
+        ORIGINAL_CONFIG_SHELL=${CONFIG_SHELL-/bin/sh}
+        export ORIGINAL_CONFIG_SHELL
+        CONFIG_SHELL=/bin/ksh
+        export CONFIG_SHELL
+        exec $CONFIG_SHELL "$0" --no-reexec ${1+"$@"}
       else
-	# Try using printf.
-	ECHO='printf %s\n'
-	if test "X`{ $ECHO '\t'; } 2>/dev/null`" = 'X\t' &&
+        # Try using printf.
+        ECHO='printf %s\n'
+        if test "X`{ $ECHO '\t'; } 2>/dev/null`" = 'X\t' &&
 	   echo_testing_string=`{ $ECHO "$echo_test_string"; } 2>/dev/null` &&
 	   test "X$echo_testing_string" = "X$echo_test_string"; then
 	  # Cool, printf works
 	  :
-	elif echo_testing_string=`($ORIGINAL_CONFIG_SHELL "$0" --fallback-echo '\t') 2>/dev/null` &&
+        elif echo_testing_string=`($ORIGINAL_CONFIG_SHELL "$0" --fallback-echo '\t') 2>/dev/null` &&
 	     test "X$echo_testing_string" = 'X\t' &&
 	     echo_testing_string=`($ORIGINAL_CONFIG_SHELL "$0" --fallback-echo "$echo_test_string") 2>/dev/null` &&
 	     test "X$echo_testing_string" = "X$echo_test_string"; then
@@ -634,12 +634,12 @@ if test -z "$lt_ECHO"; then
 	  SHELL="$CONFIG_SHELL"
 	  export SHELL
 	  ECHO="$CONFIG_SHELL $0 --fallback-echo"
-	elif echo_testing_string=`($CONFIG_SHELL "$0" --fallback-echo '\t') 2>/dev/null` &&
+        elif echo_testing_string=`($CONFIG_SHELL "$0" --fallback-echo '\t') 2>/dev/null` &&
 	     test "X$echo_testing_string" = 'X\t' &&
 	     echo_testing_string=`($CONFIG_SHELL "$0" --fallback-echo "$echo_test_string") 2>/dev/null` &&
 	     test "X$echo_testing_string" = "X$echo_test_string"; then
 	  ECHO="$CONFIG_SHELL $0 --fallback-echo"
-	else
+        else
 	  # maybe with a smaller string...
 	  prev=:
 
@@ -659,7 +659,7 @@ if test -z "$lt_ECHO"; then
 	    # Oops.  We lost completely, so just stick with echo.
 	    ECHO=echo
 	  fi
-	fi
+        fi
       fi
     fi
   fi
@@ -696,7 +696,7 @@ MFLAGS=
 MAKEFLAGS=
 
 # Identity of this package.
-PACKAGE_NAME='GStreamer Bad Plug-ins'
+PACKAGE_NAME=
 PACKAGE_TARNAME=
 PACKAGE_VERSION=
 PACKAGE_STRING=
@@ -755,9 +755,9 @@ GST_MAJORMINOR
 GST_LIBS
 GST_CFLAGS
 HAVE_PKGCONFIG
-GST_LICENSE
 GST_PACKAGE_ORIGIN
 GST_PACKAGE_NAME
+GST_LICENSE
 HAVE_ORCC_FALSE
 HAVE_ORCC_TRUE
 HAVE_ORC_FALSE
@@ -775,7 +775,6 @@ NMEDIT
 DSYMUTIL
 lt_ECHO
 RANLIB
-AM_DEFAULT_VERBOSITY
 AR
 OBJDUMP
 LN_S
@@ -787,14 +786,6 @@ FGREP
 EGREP
 GREP
 SED
-host_os
-host_vendor
-host_cpu
-host
-build_os
-build_vendor
-build_cpu
-build
 LIBTOOL
 am__fastdepCC_FALSE
 am__fastdepCC_TRUE
@@ -812,6 +803,19 @@ CPPFLAGS
 LDFLAGS
 CFLAGS
 CC
+AM_BACKSLASH
+AM_DEFAULT_VERBOSITY
+host_os
+host_vendor
+host_cpu
+host
+build_os
+build_vendor
+build_cpu
+build
+MAINT
+MAINTAINER_MODE_FALSE
+MAINTAINER_MODE_TRUE
 ACLOCAL_AMFLAGS
 am__untar
 am__tar
@@ -834,9 +838,6 @@ am__isrc
 INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
-MAINT
-MAINTAINER_MODE_FALSE
-MAINTAINER_MODE_TRUE
 VERSION
 PACKAGE
 GST_PLUGIN_VERSION_NANO
@@ -887,10 +888,10 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_maintainer_mode
+enable_silent_rules
 enable_dependency_tracking
 enable_shared
 enable_static
-enable_edgesence
 with_pic
 enable_fast_install
 with_gnu_ld
@@ -1480,9 +1481,9 @@ Configuration:
 
 Installation directories:
   --prefix=PREFIX         install architecture-independent files in PREFIX
-			  [$ac_default_prefix]
+                          [$ac_default_prefix]
   --exec-prefix=EPREFIX   install architecture-dependent files in EPREFIX
-			  [PREFIX]
+                          [PREFIX]
 
 By default, \`make install' will install all the files in
 \`$ac_default_prefix/bin', \`$ac_default_prefix/lib' etc.  You can specify
@@ -1536,13 +1537,14 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-maintainer-mode  enable make rules and dependencies not useful
 			  (and sometimes confusing) to the casual installer
+  --enable-silent-rules          less verbose build output (undo: `make V=1')
+  --disable-silent-rules         verbose build output (undo: `make V=0')
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
-  --enable-edgesence[=PKGS]  build edgesence algorithm [default=yes]
   --enable-fast-install[=PKGS]
-			  optimize for fast installation [default=yes]
+                          optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-orc            use Orc if installed
 
@@ -1550,17 +1552,17 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-pic              try to use only PIC/non-PIC objects [default=use
-			  both]
+                          both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
 
 Some influential environment variables:
   CC          C compiler command
   CFLAGS      C compiler flags
   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
-	      nonstandard directory <lib dir>
+              nonstandard directory <lib dir>
   LIBS        libraries to pass to the linker, e.g. -l<library>
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
-	      you have headers in a nonstandard directory <include dir>
+              you have headers in a nonstandard directory <include dir>
   CPP         C preprocessor
   PKG_CONFIG  path to pkg-config utility
   ORC_CFLAGS  C compiler flags for ORC, overriding pkg-config
@@ -1568,17 +1570,17 @@ Some influential environment variables:
   GST_CFLAGS  C compiler flags for GST, overriding pkg-config
   GST_LIBS    linker flags for GST, overriding pkg-config
   GST_BASE_CFLAGS
-	      C compiler flags for GST_BASE, overriding pkg-config
+              C compiler flags for GST_BASE, overriding pkg-config
   GST_BASE_LIBS
-	      linker flags for GST_BASE, overriding pkg-config
+              linker flags for GST_BASE, overriding pkg-config
   GSTPB_BASE_CFLAGS
-	      C compiler flags for GSTPB_BASE, overriding pkg-config
+              C compiler flags for GSTPB_BASE, overriding pkg-config
   GSTPB_BASE_LIBS
-	      linker flags for GSTPB_BASE, overriding pkg-config
+              linker flags for GSTPB_BASE, overriding pkg-config
   GSTCTRL_CFLAGS
-	      C compiler flags for GSTCTRL, overriding pkg-config
+              C compiler flags for GSTCTRL, overriding pkg-config
   GSTCTRL_LIBS
-	      linker flags for GSTCTRL, overriding pkg-config
+              linker flags for GSTCTRL, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2290,13 +2292,13 @@ GSTPB_REQUIRED=0.10.0
 $as_echo "$as_me: configuring gst-bayer2rgb2 for release" >&6;}
       VERSION=0.10.0
       GST_PLUGIN_VERSION_RELEASE=1
-	    GST_PLUGIN_CVS="no"
+            GST_PLUGIN_CVS="no"
   else
       { $as_echo "$as_me:${as_lineno-$LINENO}: configuring gst-bayer2rgb2 for development with nano $NANO" >&5
 $as_echo "$as_me: configuring gst-bayer2rgb2 for development with nano $NANO" >&6;}
       VERSION=0.10.0.$NANO
       GST_PLUGIN_VERSION_RELEASE=0.`date +%Y%m%d.%H%M%S`
-	    GST_PLUGIN_CVS="yes"
+            GST_PLUGIN_CVS="yes"
   fi
 
   GST_PLUGIN_VERSION=$VERSION
@@ -2328,30 +2330,6 @@ cat >>confdefs.h <<_ACEOF
 #define VERSION "$VERSION"
 _ACEOF
 
-
-
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable maintainer-specific portions of Makefiles" >&5
-$as_echo_n "checking whether to enable maintainer-specific portions of Makefiles... " >&6; }
-    # Check whether --enable-maintainer-mode was given.
-if test "${enable_maintainer_mode+set}" = set; then :
-  enableval=$enable_maintainer_mode; USE_MAINTAINER_MODE=$enableval
-else
-  USE_MAINTAINER_MODE=no
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_MAINTAINER_MODE" >&5
-$as_echo "$USE_MAINTAINER_MODE" >&6; }
-   if test $USE_MAINTAINER_MODE = yes; then
-  MAINTAINER_MODE_TRUE=
-  MAINTAINER_MODE_FALSE='#'
-else
-  MAINTAINER_MODE_TRUE='#'
-  MAINTAINER_MODE_FALSE=
-fi
-
-  MAINT=$MAINTAINER_MODE_TRUE
 
 
 
@@ -2863,6 +2841,115 @@ ACLOCAL_AMFLAGS="-I m4"
 ac_config_headers="$ac_config_headers config.h"
 
 
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable maintainer-specific portions of Makefiles" >&5
+$as_echo_n "checking whether to enable maintainer-specific portions of Makefiles... " >&6; }
+    # Check whether --enable-maintainer-mode was given.
+if test "${enable_maintainer_mode+set}" = set; then :
+  enableval=$enable_maintainer_mode; USE_MAINTAINER_MODE=$enableval
+else
+  USE_MAINTAINER_MODE=no
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_MAINTAINER_MODE" >&5
+$as_echo "$USE_MAINTAINER_MODE" >&6; }
+   if test $USE_MAINTAINER_MODE = yes; then
+  MAINTAINER_MODE_TRUE=
+  MAINTAINER_MODE_FALSE='#'
+else
+  MAINTAINER_MODE_TRUE='#'
+  MAINTAINER_MODE_FALSE=
+fi
+
+  MAINT=$MAINTAINER_MODE_TRUE
+
+
+
+# Make sure we can run config.sub.
+$SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
+  as_fn_error "cannot run $SHELL $ac_aux_dir/config.sub" "$LINENO" 5
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking build system type" >&5
+$as_echo_n "checking build system type... " >&6; }
+if test "${ac_cv_build+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_build_alias=$build_alias
+test "x$ac_build_alias" = x &&
+  ac_build_alias=`$SHELL "$ac_aux_dir/config.guess"`
+test "x$ac_build_alias" = x &&
+  as_fn_error "cannot guess build type; you must specify one" "$LINENO" 5
+ac_cv_build=`$SHELL "$ac_aux_dir/config.sub" $ac_build_alias` ||
+  as_fn_error "$SHELL $ac_aux_dir/config.sub $ac_build_alias failed" "$LINENO" 5
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_build" >&5
+$as_echo "$ac_cv_build" >&6; }
+case $ac_cv_build in
+*-*-*) ;;
+*) as_fn_error "invalid value of canonical build" "$LINENO" 5;;
+esac
+build=$ac_cv_build
+ac_save_IFS=$IFS; IFS='-'
+set x $ac_cv_build
+shift
+build_cpu=$1
+build_vendor=$2
+shift; shift
+# Remember, the first character of IFS is used to create $*,
+# except with old shells:
+build_os=$*
+IFS=$ac_save_IFS
+case $build_os in *\ *) build_os=`echo "$build_os" | sed 's/ /-/g'`;; esac
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking host system type" >&5
+$as_echo_n "checking host system type... " >&6; }
+if test "${ac_cv_host+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test "x$host_alias" = x; then
+  ac_cv_host=$ac_cv_build
+else
+  ac_cv_host=`$SHELL "$ac_aux_dir/config.sub" $host_alias` ||
+    as_fn_error "$SHELL $ac_aux_dir/config.sub $host_alias failed" "$LINENO" 5
+fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_host" >&5
+$as_echo "$ac_cv_host" >&6; }
+case $ac_cv_host in
+*-*-*) ;;
+*) as_fn_error "invalid value of canonical host" "$LINENO" 5;;
+esac
+host=$ac_cv_host
+ac_save_IFS=$IFS; IFS='-'
+set x $ac_cv_host
+shift
+host_cpu=$1
+host_vendor=$2
+shift; shift
+# Remember, the first character of IFS is used to create $*,
+# except with old shells:
+host_os=$*
+IFS=$ac_save_IFS
+case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
+
+
+
+# Check whether --enable-silent-rules was given.
+if test "${enable_silent_rules+set}" = set; then :
+  enableval=$enable_silent_rules;
+fi
+
+case $enable_silent_rules in
+yes) AM_DEFAULT_VERBOSITY=0;;
+no)  AM_DEFAULT_VERBOSITY=1;;
+*)   AM_DEFAULT_VERBOSITY=0;;
+esac
+AM_BACKSLASH='\'
+
+
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2961,7 +3048,7 @@ else
 fi
 
 if test -z "$CC"; then
-	  if test -n "$ac_tool_prefix"; then
+          if test -n "$ac_tool_prefix"; then
     # Extract the first word of "${ac_tool_prefix}cc", so it can be a program name with args.
 set dummy ${ac_tool_prefix}cc; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -3183,7 +3270,7 @@ $as_echo "$ac_try_echo"; } >&5
   if test -s conftest.err; then
     sed '10a\
 ... rest of stderr output deleted ...
-	 10q' conftest.err >conftest.er1
+         10q' conftest.err >conftest.er1
     cat conftest.er1 >&5
   fi
   rm -f conftest.er1 conftest.err
@@ -3801,7 +3888,7 @@ else
        source=sub/conftest.c object=$am__obj \
        depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
        $SHELL ./depcomp $depcc -c $am__minus_obj sub/conftest.c \
-	 >/dev/null 2>conftest.err &&
+         >/dev/null 2>conftest.err &&
        grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
        grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
        grep $am__obj sub/conftest.Po > /dev/null 2>&1 &&
@@ -3814,9 +3901,9 @@ else
       # The diagnosis changed in icc 8.0:
       #   icc: Command line remark: option '-MP' not supported
       if (grep 'ignoring option' conftest.err ||
-	  grep 'not supported' conftest.err) >/dev/null 2>&1; then :; else
-	am_cv_CC_dependencies_compiler_type=$depmode
-	break
+          grep 'not supported' conftest.err) >/dev/null 2>&1; then :; else
+        am_cv_CC_dependencies_compiler_type=$depmode
+        break
       fi
     fi
   done
@@ -3868,83 +3955,12 @@ macro_revision='1.3017'
 
 ltmain="$ac_aux_dir/ltmain.sh"
 
-# Make sure we can run config.sub.
-$SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
-  as_fn_error "cannot run $SHELL $ac_aux_dir/config.sub" "$LINENO" 5
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking build system type" >&5
-$as_echo_n "checking build system type... " >&6; }
-if test "${ac_cv_build+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_build_alias=$build_alias
-test "x$ac_build_alias" = x &&
-  ac_build_alias=`$SHELL "$ac_aux_dir/config.guess"`
-test "x$ac_build_alias" = x &&
-  as_fn_error "cannot guess build type; you must specify one" "$LINENO" 5
-ac_cv_build=`$SHELL "$ac_aux_dir/config.sub" $ac_build_alias` ||
-  as_fn_error "$SHELL $ac_aux_dir/config.sub $ac_build_alias failed" "$LINENO" 5
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_build" >&5
-$as_echo "$ac_cv_build" >&6; }
-case $ac_cv_build in
-*-*-*) ;;
-*) as_fn_error "invalid value of canonical build" "$LINENO" 5;;
-esac
-build=$ac_cv_build
-ac_save_IFS=$IFS; IFS='-'
-set x $ac_cv_build
-shift
-build_cpu=$1
-build_vendor=$2
-shift; shift
-# Remember, the first character of IFS is used to create $*,
-# except with old shells:
-build_os=$*
-IFS=$ac_save_IFS
-case $build_os in *\ *) build_os=`echo "$build_os" | sed 's/ /-/g'`;; esac
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking host system type" >&5
-$as_echo_n "checking host system type... " >&6; }
-if test "${ac_cv_host+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test "x$host_alias" = x; then
-  ac_cv_host=$ac_cv_build
-else
-  ac_cv_host=`$SHELL "$ac_aux_dir/config.sub" $host_alias` ||
-    as_fn_error "$SHELL $ac_aux_dir/config.sub $host_alias failed" "$LINENO" 5
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_host" >&5
-$as_echo "$ac_cv_host" >&6; }
-case $ac_cv_host in
-*-*-*) ;;
-*) as_fn_error "invalid value of canonical host" "$LINENO" 5;;
-esac
-host=$ac_cv_host
-ac_save_IFS=$IFS; IFS='-'
-set x $ac_cv_host
-shift
-host_cpu=$1
-host_vendor=$2
-shift; shift
-# Remember, the first character of IFS is used to create $*,
-# except with old shells:
-host_os=$*
-IFS=$ac_save_IFS
-case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
-
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for a sed that does not truncate output" >&5
 $as_echo_n "checking for a sed that does not truncate output... " >&6; }
 if test "${ac_cv_path_SED+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
-	    ac_script=s/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/
+            ac_script=s/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/
      for ac_i in 1 2 3 4 5 6 7; do
        ac_script="$ac_script$as_nl$ac_script"
      done
@@ -4219,6 +4235,7 @@ $as_echo "$ac_cv_path_FGREP" >&6; }
 
 
 test -z "$GREP" && GREP=grep
+
 
 
 
@@ -4522,13 +4539,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:4520: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:4542: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4523: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:4545: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4526: output\"" >&5)
+  (eval echo "\"\$as_me:4548: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -4619,7 +4636,7 @@ else
     #
     if test -x /sbin/sysconfig; then
       case `/sbin/sysconfig -q proc exec_disable_arg_limit` in
-	*1*) lt_cv_sys_max_cmd_len=-1 ;;
+        *1*) lt_cv_sys_max_cmd_len=-1 ;;
       esac
     fi
     ;;
@@ -4643,18 +4660,18 @@ else
       # Make teststring a little bigger before we do anything with it.
       # a 1K string should be a reasonable start.
       for i in 1 2 3 4 5 6 7 8 ; do
-	teststring=$teststring$teststring
+        teststring=$teststring$teststring
       done
       SHELL=${SHELL-${CONFIG_SHELL-/bin/sh}}
       # If test is not a shell built-in, we'll probably end up computing a
       # maximum length that is only half of the actual maximum length, but
       # we can't tell.
       while { test "X"`$SHELL $0 --fallback-echo "X$teststring$teststring" 2>/dev/null` \
-		 = "XX$teststring$teststring"; } >/dev/null 2>&1 &&
+	         = "XX$teststring$teststring"; } >/dev/null 2>&1 &&
 	      test $i != 17 # 1/2 MB should be enough
       do
-	i=`expr $i + 1`
-	teststring=$teststring$teststring
+        i=`expr $i + 1`
+        teststring=$teststring$teststring
       done
       # Only check the string length outside the loop.
       lt_cv_sys_max_cmd_len=`expr "X$teststring" : ".*" 2>&1`
@@ -5734,7 +5751,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 5732 "configure"' > conftest.$ac_ext
+  echo '#line 5754 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -6402,7 +6419,7 @@ else
 -dynamiclib -Wl,-single_module conftest.c" >&5
 	$LTCC $LTCFLAGS $LDFLAGS -o libconftest.dylib \
 	  -dynamiclib -Wl,-single_module conftest.c 2>conftest.err
-	_lt_result=$?
+        _lt_result=$?
 	if test -f libconftest.dylib && test ! -s conftest.err && test $_lt_result = 0; then
 	  lt_cv_apple_cc_single_mod=yes
 	else
@@ -6768,13 +6785,13 @@ done
 
 
 
-	enable_dlopen=no
+        enable_dlopen=no
 
 
   enable_win32_dll=no
 
 
-	    # Check whether --enable-shared was given.
+            # Check whether --enable-shared was given.
 if test "${enable_shared+set}" = set; then :
   enableval=$enable_shared; p=${PACKAGE-default}
     case $enableval in
@@ -6828,26 +6845,7 @@ else
   enable_static=yes
 fi
 
-# Check whether --enable-edgesence was given.
-path=`pwd`'/src'
-if test "${enable_edgesence+set}" = set; then :
-    enable_edgesence=yes
-    cp $path'/bayer.c' $path'/bayer_ori.c'
-    patch $path'/bayer.c' $path'/libdc1394_edgesence.patch'
-    if [ -f $path'/bayer.c.orig' ]; then :
-        rm $path'/bayer.c.orig'
-    fi
-    if [ -f $path'/bayer.c.rej' ]; then :
-        rm $path'/bayer.c.rej'
-    fi
-    echo "Enable patch, method Edgesence activated"
-else
-    if [ -f $path'/bayer_ori.c' ]; then :
-        mv $path'/bayer_ori.c' $path'/bayer.c'
-        touch $path'/bayer.c'
-    fi
-    enable_edgesence=no
-fi
+
 
 
 
@@ -7279,11 +7277,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7258: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7280: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7262: \$? = $ac_status" >&5
+   echo "$as_me:7284: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7335,15 +7333,15 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
     amigaos*)
       case $host_cpu in
       powerpc)
-	    # see comment about AmigaOS4 .so support
-	    lt_prog_compiler_pic='-fPIC'
-	;;
+            # see comment about AmigaOS4 .so support
+            lt_prog_compiler_pic='-fPIC'
+        ;;
       m68k)
-	    # FIXME: we need at least 68020 code to build shared libraries, but
-	    # adding the `-m68020' flag to GCC prevents building anything better,
-	    # like `-m68040'.
-	    lt_prog_compiler_pic='-m68020 -resident32 -malways-restore-a4'
-	;;
+            # FIXME: we need at least 68020 code to build shared libraries, but
+            # adding the `-m68020' flag to GCC prevents building anything better,
+            # like `-m68040'.
+            lt_prog_compiler_pic='-m68020 -resident32 -malways-restore-a4'
+        ;;
       esac
       ;;
 
@@ -7455,14 +7453,14 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
 	lt_prog_compiler_wl='-Wl,'
 	lt_prog_compiler_pic='-KPIC'
 	lt_prog_compiler_static='-static'
-	;;
+        ;;
       # icc used to be incompatible with GCC.
       # ICC 10 doesn't accept -KPIC any more.
       icc* | ifort*)
 	lt_prog_compiler_wl='-Wl,'
 	lt_prog_compiler_pic='-fPIC'
 	lt_prog_compiler_static='-static'
-	;;
+        ;;
       # Lahey Fortran 8.1.
       lf95*)
 	lt_prog_compiler_wl='-Wl,'
@@ -7470,17 +7468,17 @@ $as_echo_n "checking for $compiler option to produce PIC... " >&6; }
 	lt_prog_compiler_static='--static'
 	;;
       pgcc* | pgf77* | pgf90* | pgf95*)
-	# Portland Group compilers (*not* the Pentium gcc compiler,
+        # Portland Group compilers (*not* the Pentium gcc compiler,
 	# which looks to be a dead project)
 	lt_prog_compiler_wl='-Wl,'
 	lt_prog_compiler_pic='-fpic'
 	lt_prog_compiler_static='-Bstatic'
-	;;
+        ;;
       ccc*)
-	lt_prog_compiler_wl='-Wl,'
-	# All Alpha code is PIC.
-	lt_prog_compiler_static='-non_shared'
-	;;
+        lt_prog_compiler_wl='-Wl,'
+        # All Alpha code is PIC.
+        lt_prog_compiler_static='-non_shared'
+        ;;
       xl*)
 	# IBM XL C 8.0/Fortran 10.1 on PPC
 	lt_prog_compiler_wl='-Wl,'
@@ -7618,11 +7616,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7597: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7619: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7601: \$? = $ac_status" >&5
+   echo "$as_me:7623: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7677,7 +7675,7 @@ else
        $ECHO "X$_lt_linker_boilerplate" | $Xsed -e '/^$/d' > conftest.exp
        $SED '/^$/d; /^ *+/d' conftest.err >conftest.er2
        if diff conftest.exp conftest.er2 >/dev/null; then
-	 lt_cv_prog_compiler_static_works=yes
+         lt_cv_prog_compiler_static_works=yes
        fi
      else
        lt_cv_prog_compiler_static_works=yes
@@ -7723,11 +7721,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7702: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7724: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:7706: \$? = $ac_status" >&5
+   echo "$as_me:7728: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -7778,11 +7776,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7757: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7779: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:7761: \$? = $ac_status" >&5
+   echo "$as_me:7783: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -7950,15 +7948,15 @@ _LT_EOF
     amigaos*)
       case $host_cpu in
       powerpc)
-	    # see comment about AmigaOS4 .so support
-	    archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
-	    archive_expsym_cmds=''
-	;;
+            # see comment about AmigaOS4 .so support
+            archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
+            archive_expsym_cmds=''
+        ;;
       m68k)
-	    archive_cmds='$RM $output_objdir/a2ixlibrary.data~$ECHO "#define NAME $libname" > $output_objdir/a2ixlibrary.data~$ECHO "#define LIBRARY_ID 1" >> $output_objdir/a2ixlibrary.data~$ECHO "#define VERSION $major" >> $output_objdir/a2ixlibrary.data~$ECHO "#define REVISION $revision" >> $output_objdir/a2ixlibrary.data~$AR $AR_FLAGS $lib $libobjs~$RANLIB $lib~(cd $output_objdir && a2ixlibrary -32)'
-	    hardcode_libdir_flag_spec='-L$libdir'
-	    hardcode_minus_L=yes
-	;;
+            archive_cmds='$RM $output_objdir/a2ixlibrary.data~$ECHO "#define NAME $libname" > $output_objdir/a2ixlibrary.data~$ECHO "#define LIBRARY_ID 1" >> $output_objdir/a2ixlibrary.data~$ECHO "#define VERSION $major" >> $output_objdir/a2ixlibrary.data~$ECHO "#define REVISION $revision" >> $output_objdir/a2ixlibrary.data~$AR $AR_FLAGS $lib $libobjs~$RANLIB $lib~(cd $output_objdir && a2ixlibrary -32)'
+            hardcode_libdir_flag_spec='-L$libdir'
+            hardcode_minus_L=yes
+        ;;
       esac
       ;;
 
@@ -7983,7 +7981,7 @@ _LT_EOF
       export_symbols_cmds='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[BCDGRS][ ]/s/.*[ ]\([^ ]*\)/\1 DATA/'\'' | $SED -e '\''/^[AITW][ ]/s/.*[ ]//'\'' | sort | uniq > $export_symbols'
 
       if $LD --help 2>&1 | $GREP 'auto-import' > /dev/null; then
-	archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker $lib'
+        archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker $lib'
 	# If the export-symbols file already is a .def file (1st line
 	# is EXPORTS), use it as is; otherwise, prepend...
 	archive_expsym_cmds='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
@@ -8026,7 +8024,7 @@ _LT_EOF
 	tmp_addflag=
 	tmp_sharedflag='-shared'
 	case $cc_basename,$host_cpu in
-	pgcc*)				# Portland Group C compiler
+        pgcc*)				# Portland Group C compiler
 	  whole_archive_flag_spec='${wl}--whole-archive`for conv in $convenience\"\"; do test  -n \"$conv\" && new_convenience=\"$new_convenience,$conv\"; done; $ECHO \"$new_convenience\"` ${wl}--no-whole-archive'
 	  tmp_addflag=' $pic_flag'
 	  ;;
@@ -8056,12 +8054,12 @@ _LT_EOF
 	esac
 	archive_cmds='$CC '"$tmp_sharedflag""$tmp_addflag"' $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
 
-	if test "x$supports_anon_versioning" = xyes; then
-	  archive_expsym_cmds='echo "{ global:" > $output_objdir/$libname.ver~
+        if test "x$supports_anon_versioning" = xyes; then
+          archive_expsym_cmds='echo "{ global:" > $output_objdir/$libname.ver~
 	    cat $export_symbols | sed -e "s/\(.*\)/\1;/" >> $output_objdir/$libname.ver~
 	    echo "local: *; };" >> $output_objdir/$libname.ver~
 	    $CC '"$tmp_sharedflag""$tmp_addflag"' $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-version-script ${wl}$output_objdir/$libname.ver -o $lib'
-	fi
+        fi
 
 	case $cc_basename in
 	xlf*)
@@ -8079,7 +8077,7 @@ _LT_EOF
 	  ;;
 	esac
       else
-	ld_shlibs=no
+        ld_shlibs=no
       fi
       ;;
 
@@ -8116,7 +8114,7 @@ _LT_EOF
 
     sysv5* | sco3.2v5* | sco5v6* | unixware* | OpenUNIX*)
       case `$LD -v 2>&1` in
-	*\ [01].* | *\ 2.[0-9].* | *\ 2.1[0-5].*)
+        *\ [01].* | *\ 2.[0-9].* | *\ 2.1[0-5].*)
 	ld_shlibs=no
 	cat <<_LT_EOF 1>&2
 
@@ -8282,9 +8280,9 @@ _LT_EOF
 	# Warning - without using the other runtime loading flags (-brtl),
 	# -berok will link without error, but may produce a broken library.
 	allow_undefined_flag='-berok'
-	# Determine the default libpath from the value encoded in an
-	# empty executable.
-	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+        # Determine the default libpath from the value encoded in an
+        # empty executable.
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 int
@@ -8314,8 +8312,8 @@ rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 
-	hardcode_libdir_flag_spec='${wl}-blibpath:$libdir:'"$aix_libpath"
-	archive_expsym_cmds='$CC -o $output_objdir/$soname $libobjs $deplibs '"\${wl}$no_entry_flag"' $compiler_flags `if test "x${allow_undefined_flag}" != "x"; then $ECHO "X${wl}${allow_undefined_flag}" | $Xsed; else :; fi` '"\${wl}$exp_sym_flag:\$export_symbols $shared_flag"
+        hardcode_libdir_flag_spec='${wl}-blibpath:$libdir:'"$aix_libpath"
+        archive_expsym_cmds='$CC -o $output_objdir/$soname $libobjs $deplibs '"\${wl}$no_entry_flag"' $compiler_flags `if test "x${allow_undefined_flag}" != "x"; then $ECHO "X${wl}${allow_undefined_flag}" | $Xsed; else :; fi` '"\${wl}$exp_sym_flag:\$export_symbols $shared_flag"
       else
 	if test "$host_cpu" = ia64; then
 	  hardcode_libdir_flag_spec='${wl}-R $libdir:/usr/lib:/lib'
@@ -8371,15 +8369,15 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     amigaos*)
       case $host_cpu in
       powerpc)
-	    # see comment about AmigaOS4 .so support
-	    archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
-	    archive_expsym_cmds=''
-	;;
+            # see comment about AmigaOS4 .so support
+            archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
+            archive_expsym_cmds=''
+        ;;
       m68k)
-	    archive_cmds='$RM $output_objdir/a2ixlibrary.data~$ECHO "#define NAME $libname" > $output_objdir/a2ixlibrary.data~$ECHO "#define LIBRARY_ID 1" >> $output_objdir/a2ixlibrary.data~$ECHO "#define VERSION $major" >> $output_objdir/a2ixlibrary.data~$ECHO "#define REVISION $revision" >> $output_objdir/a2ixlibrary.data~$AR $AR_FLAGS $lib $libobjs~$RANLIB $lib~(cd $output_objdir && a2ixlibrary -32)'
-	    hardcode_libdir_flag_spec='-L$libdir'
-	    hardcode_minus_L=yes
-	;;
+            archive_cmds='$RM $output_objdir/a2ixlibrary.data~$ECHO "#define NAME $libname" > $output_objdir/a2ixlibrary.data~$ECHO "#define LIBRARY_ID 1" >> $output_objdir/a2ixlibrary.data~$ECHO "#define VERSION $major" >> $output_objdir/a2ixlibrary.data~$ECHO "#define REVISION $revision" >> $output_objdir/a2ixlibrary.data~$AR $AR_FLAGS $lib $libobjs~$RANLIB $lib~(cd $output_objdir && a2ixlibrary -32)'
+            hardcode_libdir_flag_spec='-L$libdir'
+            hardcode_minus_L=yes
+        ;;
       esac
       ;;
 
@@ -8561,9 +8559,9 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	# Try to use the -exported_symbol ld option, if it does not
 	# work, assume that -exports_file does not work either and
 	# implicitly export all symbols.
-	save_LDFLAGS="$LDFLAGS"
-	LDFLAGS="$LDFLAGS -shared ${wl}-exported_symbol ${wl}foo ${wl}-update_registry ${wl}/dev/null"
-	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+        save_LDFLAGS="$LDFLAGS"
+        LDFLAGS="$LDFLAGS -shared ${wl}-exported_symbol ${wl}foo ${wl}-update_registry ${wl}/dev/null"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 int foo(void) {}
 _ACEOF
@@ -8573,7 +8571,7 @@ if ac_fn_c_try_link "$LINENO"; then :
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
-	LDFLAGS="$save_LDFLAGS"
+        LDFLAGS="$save_LDFLAGS"
       else
 	archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -soname $soname `test -n "$verstring" && $ECHO "X-set_version $verstring" | $Xsed` -update_registry ${output_objdir}/so_locations -o $lib'
 	archive_expsym_cmds='$CC -shared $libobjs $deplibs $compiler_flags -soname $soname `test -n "$verstring" && $ECHO "X-set_version $verstring" | $Xsed` -update_registry ${output_objdir}/so_locations -exports_file $export_symbols -o $lib'
@@ -8741,7 +8739,7 @@ rm -f core conftest.err conftest.$ac_objext \
 	  archive_cmds='$LD -G -o $lib $libobjs $deplibs $linker_flags'
 	  reload_cmds='$CC -r -o $output$reload_objs'
 	  hardcode_direct=no
-	;;
+        ;;
 	motorola)
 	  archive_cmds='$LD -G -h $soname -o $lib $libobjs $deplibs $linker_flags'
 	  hardcode_direct=no #Motorola manual says yes, but my tests say they lie
@@ -8875,32 +8873,32 @@ $as_echo_n "checking whether -lc should be explicitly linked in... " >&6; }
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } 2>conftest.err; then
-	soname=conftest
-	lib=conftest
-	libobjs=conftest.$ac_objext
-	deplibs=
-	wl=$lt_prog_compiler_wl
+        soname=conftest
+        lib=conftest
+        libobjs=conftest.$ac_objext
+        deplibs=
+        wl=$lt_prog_compiler_wl
 	pic_flag=$lt_prog_compiler_pic
-	compiler_flags=-v
-	linker_flags=-v
-	verstring=
-	output_objdir=.
-	libname=conftest
-	lt_save_allow_undefined_flag=$allow_undefined_flag
-	allow_undefined_flag=
-	if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$archive_cmds 2\>\&1 \| $GREP \" -lc \" \>/dev/null 2\>\&1\""; } >&5
+        compiler_flags=-v
+        linker_flags=-v
+        verstring=
+        output_objdir=.
+        libname=conftest
+        lt_save_allow_undefined_flag=$allow_undefined_flag
+        allow_undefined_flag=
+        if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$archive_cmds 2\>\&1 \| $GREP \" -lc \" \>/dev/null 2\>\&1\""; } >&5
   (eval $archive_cmds 2\>\&1 \| $GREP \" -lc \" \>/dev/null 2\>\&1) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }
-	then
+        then
 	  archive_cmds_need_lc=no
-	else
+        else
 	  archive_cmds_need_lc=yes
-	fi
-	allow_undefined_flag=$lt_save_allow_undefined_flag
+        fi
+        allow_undefined_flag=$lt_save_allow_undefined_flag
       else
-	cat conftest.err 1>&5
+        cat conftest.err 1>&5
       fi
       $RM conftest*
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $archive_cmds_need_lc" >&5
@@ -9104,13 +9102,13 @@ BEGIN {RS=" "; FS="/|\n";} {
   for (lt_i = NF; lt_i > 0; lt_i--) {
     if ($lt_i != "" && $lt_i != ".") {
       if ($lt_i == "..") {
-	lt_count++;
+        lt_count++;
       } else {
-	if (lt_count == 0) {
-	  lt_foo="/" $lt_i lt_foo;
-	} else {
-	  lt_count--;
-	}
+        if (lt_count == 0) {
+          lt_foo="/" $lt_i lt_foo;
+        } else {
+          lt_count--;
+        }
       }
     }
   }
@@ -9247,7 +9245,7 @@ cygwin* | mingw* | pw32* | cegcc*)
       $install_prog $dir/$dlname \$dldir/$dlname~
       chmod a+x \$dldir/$dlname~
       if test -n '\''$stripme'\'' && test -n '\''$striplib'\''; then
-	eval '\''$striplib \$dldir/$dlname'\'' || exit \$?;
+        eval '\''$striplib \$dldir/$dlname'\'' || exit \$?;
       fi'
     postuninstall_cmds='dldll=`$SHELL 2>&1 -c '\''. $file; echo \$dlname'\''`~
       dlpath=$dir/\$dldll~
@@ -9265,15 +9263,15 @@ cygwin* | mingw* | pw32* | cegcc*)
       soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
       sys_lib_search_path_spec=`$CC -print-search-dirs | $GREP "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
       if $ECHO "$sys_lib_search_path_spec" | $GREP ';[c-zC-Z]:/' >/dev/null; then
-	# It is most probably a Windows format PATH printed by
-	# mingw gcc, but we are running on Cygwin. Gcc prints its search
-	# path with ; separators, and with drive letters. We can handle the
-	# drive letters (cygwin fileutils understands them), so leave them,
-	# especially as we might pass files found there to a mingw objdump,
-	# which wouldn't understand a cygwinified path. Ahh.
-	sys_lib_search_path_spec=`$ECHO "$sys_lib_search_path_spec" | $SED -e 's/;/ /g'`
+        # It is most probably a Windows format PATH printed by
+        # mingw gcc, but we are running on Cygwin. Gcc prints its search
+        # path with ; separators, and with drive letters. We can handle the
+        # drive letters (cygwin fileutils understands them), so leave them,
+        # especially as we might pass files found there to a mingw objdump,
+        # which wouldn't understand a cygwinified path. Ahh.
+        sys_lib_search_path_spec=`$ECHO "$sys_lib_search_path_spec" | $SED -e 's/;/ /g'`
       else
-	sys_lib_search_path_spec=`$ECHO "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
+        sys_lib_search_path_spec=`$ECHO "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
       fi
       ;;
     pw32*)
@@ -9701,7 +9699,7 @@ sysv5* | sco3.2v5* | sco5v6* | unixware* | OpenUNIX* | sysv4*uw2*)
     sys_lib_search_path_spec='/usr/ccs/lib /usr/lib'
     case $host_os in
       sco3.2v5*)
-	sys_lib_search_path_spec="$sys_lib_search_path_spec /lib"
+        sys_lib_search_path_spec="$sys_lib_search_path_spec /lib"
 	;;
     esac
   fi
@@ -10162,7 +10160,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10141 "configure"
+#line 10163 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10258,7 +10256,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10237 "configure"
+#line 10259 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10477,7 +10475,7 @@ CC="$lt_save_CC"
 
 
 
-	ac_config_commands="$ac_config_commands libtool"
+        ac_config_commands="$ac_config_commands libtool"
 
 
 
@@ -10485,6 +10483,9 @@ CC="$lt_save_CC"
 # Only expand once:
 
 
+
+AG_GST_ARG_WITH_PACKAGE_NAME
+AG_GST_ARG_WITH_PACKAGE_ORIGIN
 
 
 
@@ -10603,8 +10604,6 @@ $as_echo "no" >&6; }
 
 fi
 
-AM_DEFAULT_VERBOSITY=0
-
   ORC_REQ=0.4.11
 
   # Check whether --enable-orc was given.
@@ -10628,9 +10627,9 @@ $as_echo_n "checking for ORC... " >&6; }
 
 if test -n "$PKG_CONFIG"; then
     if test -n "$ORC_CFLAGS"; then
-	pkg_cv_ORC_CFLAGS="$ORC_CFLAGS"
+        pkg_cv_ORC_CFLAGS="$ORC_CFLAGS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"orc-0.4 >= \$ORC_REQ\""; } >&5
   ($PKG_CONFIG --exists --print-errors "orc-0.4 >= $ORC_REQ") 2>&5
   ac_status=$?
@@ -10646,9 +10645,9 @@ else
 fi
 if test -n "$PKG_CONFIG"; then
     if test -n "$ORC_LIBS"; then
-	pkg_cv_ORC_LIBS="$ORC_LIBS"
+        pkg_cv_ORC_LIBS="$ORC_LIBS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"orc-0.4 >= \$ORC_REQ\""; } >&5
   ($PKG_CONFIG --exists --print-errors "orc-0.4 >= $ORC_REQ") 2>&5
   ac_status=$?
@@ -10668,15 +10667,15 @@ fi
 if test $pkg_failed = yes; then
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-	_pkg_short_errors_supported=yes
+        _pkg_short_errors_supported=yes
 else
-	_pkg_short_errors_supported=no
+        _pkg_short_errors_supported=no
 fi
-	if test $_pkg_short_errors_supported = yes; then
-		ORC_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "orc-0.4 >= $ORC_REQ"`
-	else
-		ORC_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "orc-0.4 >= $ORC_REQ"`
-	fi
+        if test $_pkg_short_errors_supported = yes; then
+	        ORC_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "orc-0.4 >= $ORC_REQ"`
+        else
+	        ORC_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "orc-0.4 >= $ORC_REQ"`
+        fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$ORC_PKG_ERRORS" >&5
 
@@ -10684,7 +10683,7 @@ fi
 $as_echo "no" >&6; }
 
       if test "x$enable_orc" = "xyes" ; then
-	as_fn_error "--enable-orc specified, but Orc >= $ORC_REQ not found" "$LINENO" 5
+        as_fn_error "--enable-orc specified, but Orc >= $ORC_REQ not found" "$LINENO" 5
       fi
 
 $as_echo "#define DISABLE_ORC 1" >>confdefs.h
@@ -10695,7 +10694,7 @@ $as_echo "#define DISABLE_ORC 1" >>confdefs.h
 elif test $pkg_failed = untried; then
 
       if test "x$enable_orc" = "xyes" ; then
-	as_fn_error "--enable-orc specified, but Orc >= $ORC_REQ not found" "$LINENO" 5
+        as_fn_error "--enable-orc specified, but Orc >= $ORC_REQ not found" "$LINENO" 5
       fi
 
 $as_echo "#define DISABLE_ORC 1" >>confdefs.h
@@ -10706,14 +10705,14 @@ $as_echo "#define DISABLE_ORC 1" >>confdefs.h
 else
 	ORC_CFLAGS=$pkg_cv_ORC_CFLAGS
 	ORC_LIBS=$pkg_cv_ORC_LIBS
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
 
 $as_echo "#define HAVE_ORC 1" >>confdefs.h
 
       if test "x$ORCC" = "x" ; then
-	ORCC=`$PKG_CONFIG --variable=orcc orc-0.4`
+        ORCC=`$PKG_CONFIG --variable=orcc orc-0.4`
       fi
 
       ORCC_FLAGS="--compat $ORC_REQ"
@@ -10721,7 +10720,7 @@ $as_echo "#define HAVE_ORC 1" >>confdefs.h
       HAVE_ORC=yes
       HAVE_ORCC=yes
       if test "x$cross_compiling" = "xyes" ; then
-	HAVE_ORCC=no
+        HAVE_ORCC=no
       fi
 
 fi
@@ -10748,71 +10747,31 @@ else
   HAVE_ORCC_FALSE=
 fi
 
+
+
+
 GST_LICENSE="LGPL"
 
 cat >>confdefs.h <<_ACEOF
 #define GST_LICENSE "$GST_LICENSE"
 _ACEOF
 
-# Check whether --with-package-name was given.
-if test "${with_package_name+set}" = set; then :
-  withval=$with_package_name;
-      case "${withval}" in
-	yes) as_fn_error "bad value ${withval} for --with-package-name" "$LINENO" 5 ;;
-	no)  as_fn_error "bad value ${withval} for --with-package-name" "$LINENO" 5 ;;
-	*)   GST_PACKAGE_NAME="${withval}" ;;
-      esac
-
-else
-
-      P=
-      if test "x$P" = "x"
-      then
-	P=$PACKAGE_NAME
-      fi
-
-      if test "x$PACKAGE_VERSION_NANO" = "x0"
-      then
-	GST_PACKAGE_NAME="$P source release"
-      else
-	if test "x$PACKAGE_VERSION_NANO" = "x1"
-	then
-	  GST_PACKAGE_NAME="$P git"
-	else
-	  GST_PACKAGE_NAME="$P prerelease"
-	fi
-      fi
 
 
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Using $GST_PACKAGE_NAME as package name" >&5
-$as_echo "$as_me: Using $GST_PACKAGE_NAME as package name" >&6;}
+GST_PACKAGE_NAME="GSTREAMER"
 
 cat >>confdefs.h <<_ACEOF
 #define GST_PACKAGE_NAME "$GST_PACKAGE_NAME"
 _ACEOF
 
 
-# Check whether --with-package-origin was given.
-if test "${with_package_origin+set}" = set; then :
-  withval=$with_package_origin;
-      case "${withval}" in
-	yes) as_fn_error "bad value ${withval} for --with-package-origin" "$LINENO" 5 ;;
-	no)  as_fn_error "bad value ${withval} for --with-package-origin" "$LINENO" 5 ;;
-	*)   GST_PACKAGE_ORIGIN="${withval}" ;;
-      esac
 
-else
-  GST_PACKAGE_ORIGIN="Unknown package origin"
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Using $GST_PACKAGE_ORIGIN as package origin" >&5
-$as_echo "$as_me: Using $GST_PACKAGE_ORIGIN as package origin" >&6;}
+GST_PACKAGE_ORIGIN="http://gstreamer.net/"
 
 cat >>confdefs.h <<_ACEOF
 #define GST_PACKAGE_ORIGIN "$GST_PACKAGE_ORIGIN"
 _ACEOF
+
 
 
 
@@ -10945,9 +10904,9 @@ $as_echo_n "checking for GST... " >&6; }
 
 if test -n "$PKG_CONFIG"; then
     if test -n "$GST_CFLAGS"; then
-	pkg_cv_GST_CFLAGS="$GST_CFLAGS"
+        pkg_cv_GST_CFLAGS="$GST_CFLAGS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\\
   gstreamer-\$GST_MAJORMINOR >= \$GST_REQUIRED\""; } >&5
   ($PKG_CONFIG --exists --print-errors "\
@@ -10966,9 +10925,9 @@ else
 fi
 if test -n "$PKG_CONFIG"; then
     if test -n "$GST_LIBS"; then
-	pkg_cv_GST_LIBS="$GST_LIBS"
+        pkg_cv_GST_LIBS="$GST_LIBS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\\
   gstreamer-\$GST_MAJORMINOR >= \$GST_REQUIRED\""; } >&5
   ($PKG_CONFIG --exists --print-errors "\
@@ -10991,29 +10950,29 @@ fi
 if test $pkg_failed = yes; then
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-	_pkg_short_errors_supported=yes
+        _pkg_short_errors_supported=yes
 else
-	_pkg_short_errors_supported=no
+        _pkg_short_errors_supported=no
 fi
-	if test $_pkg_short_errors_supported = yes; then
-		GST_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "\
+        if test $_pkg_short_errors_supported = yes; then
+	        GST_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "\
   gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED"`
-	else
-		GST_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "\
+        else
+	        GST_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "\
   gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED"`
-	fi
+        fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GST_PKG_ERRORS" >&5
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-		HAVE_GST=no
+                HAVE_GST=no
 elif test $pkg_failed = untried; then
 	HAVE_GST=no
 else
 	GST_CFLAGS=$pkg_cv_GST_CFLAGS
 	GST_LIBS=$pkg_cv_GST_LIBS
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	HAVE_GST=yes
 fi
@@ -11036,9 +10995,9 @@ $as_echo_n "checking for GST_BASE... " >&6; }
 
 if test -n "$PKG_CONFIG"; then
     if test -n "$GST_BASE_CFLAGS"; then
-	pkg_cv_GST_BASE_CFLAGS="$GST_BASE_CFLAGS"
+        pkg_cv_GST_BASE_CFLAGS="$GST_BASE_CFLAGS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gstreamer-base-\$GST_MAJORMINOR >= \$GST_REQUIRED\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gstreamer-base-$GST_MAJORMINOR >= $GST_REQUIRED") 2>&5
   ac_status=$?
@@ -11054,9 +11013,9 @@ else
 fi
 if test -n "$PKG_CONFIG"; then
     if test -n "$GST_BASE_LIBS"; then
-	pkg_cv_GST_BASE_LIBS="$GST_BASE_LIBS"
+        pkg_cv_GST_BASE_LIBS="$GST_BASE_LIBS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gstreamer-base-\$GST_MAJORMINOR >= \$GST_REQUIRED\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gstreamer-base-$GST_MAJORMINOR >= $GST_REQUIRED") 2>&5
   ac_status=$?
@@ -11076,27 +11035,27 @@ fi
 if test $pkg_failed = yes; then
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-	_pkg_short_errors_supported=yes
+        _pkg_short_errors_supported=yes
 else
-	_pkg_short_errors_supported=no
+        _pkg_short_errors_supported=no
 fi
-	if test $_pkg_short_errors_supported = yes; then
-		GST_BASE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gstreamer-base-$GST_MAJORMINOR >= $GST_REQUIRED"`
-	else
-		GST_BASE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gstreamer-base-$GST_MAJORMINOR >= $GST_REQUIRED"`
-	fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GST_BASE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gstreamer-base-$GST_MAJORMINOR >= $GST_REQUIRED"`
+        else
+	        GST_BASE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gstreamer-base-$GST_MAJORMINOR >= $GST_REQUIRED"`
+        fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GST_BASE_PKG_ERRORS" >&5
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-		HAVE_GST_BASE=no
+                HAVE_GST_BASE=no
 elif test $pkg_failed = untried; then
 	HAVE_GST_BASE=no
 else
 	GST_BASE_CFLAGS=$pkg_cv_GST_BASE_CFLAGS
 	GST_BASE_LIBS=$pkg_cv_GST_BASE_LIBS
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	HAVE_GST_BASE=yes
 fi
@@ -11116,9 +11075,9 @@ $as_echo_n "checking for GSTPB_BASE... " >&6; }
 
 if test -n "$PKG_CONFIG"; then
     if test -n "$GSTPB_BASE_CFLAGS"; then
-	pkg_cv_GSTPB_BASE_CFLAGS="$GSTPB_BASE_CFLAGS"
+        pkg_cv_GSTPB_BASE_CFLAGS="$GSTPB_BASE_CFLAGS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gstreamer-plugins-base-\$GST_MAJORMINOR >= \$GSTPB_REQUIRED\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED") 2>&5
   ac_status=$?
@@ -11134,9 +11093,9 @@ else
 fi
 if test -n "$PKG_CONFIG"; then
     if test -n "$GSTPB_BASE_LIBS"; then
-	pkg_cv_GSTPB_BASE_LIBS="$GSTPB_BASE_LIBS"
+        pkg_cv_GSTPB_BASE_LIBS="$GSTPB_BASE_LIBS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gstreamer-plugins-base-\$GST_MAJORMINOR >= \$GSTPB_REQUIRED\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED") 2>&5
   ac_status=$?
@@ -11156,27 +11115,27 @@ fi
 if test $pkg_failed = yes; then
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-	_pkg_short_errors_supported=yes
+        _pkg_short_errors_supported=yes
 else
-	_pkg_short_errors_supported=no
+        _pkg_short_errors_supported=no
 fi
-	if test $_pkg_short_errors_supported = yes; then
-		GSTPB_BASE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED"`
-	else
-		GSTPB_BASE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED"`
-	fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GSTPB_BASE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED"`
+        else
+	        GSTPB_BASE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED"`
+        fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GSTPB_BASE_PKG_ERRORS" >&5
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-		HAVE_GSTPB_BASE=no
+                HAVE_GSTPB_BASE=no
 elif test $pkg_failed = untried; then
 	HAVE_GSTPB_BASE=no
 else
 	GSTPB_BASE_CFLAGS=$pkg_cv_GSTPB_BASE_CFLAGS
 	GSTPB_BASE_LIBS=$pkg_cv_GSTPB_BASE_LIBS
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	HAVE_GSTPB_BASE=yes
 fi
@@ -11196,9 +11155,9 @@ $as_echo_n "checking for GSTCTRL... " >&6; }
 
 if test -n "$PKG_CONFIG"; then
     if test -n "$GSTCTRL_CFLAGS"; then
-	pkg_cv_GSTCTRL_CFLAGS="$GSTCTRL_CFLAGS"
+        pkg_cv_GSTCTRL_CFLAGS="$GSTCTRL_CFLAGS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gstreamer-controller-\$GST_MAJORMINOR >= \$GSTPB_REQUIRED\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED") 2>&5
   ac_status=$?
@@ -11214,9 +11173,9 @@ else
 fi
 if test -n "$PKG_CONFIG"; then
     if test -n "$GSTCTRL_LIBS"; then
-	pkg_cv_GSTCTRL_LIBS="$GSTCTRL_LIBS"
+        pkg_cv_GSTCTRL_LIBS="$GSTCTRL_LIBS"
     else
-	if test -n "$PKG_CONFIG" && \
+        if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gstreamer-controller-\$GST_MAJORMINOR >= \$GSTPB_REQUIRED\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED") 2>&5
   ac_status=$?
@@ -11236,27 +11195,27 @@ fi
 if test $pkg_failed = yes; then
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-	_pkg_short_errors_supported=yes
+        _pkg_short_errors_supported=yes
 else
-	_pkg_short_errors_supported=no
+        _pkg_short_errors_supported=no
 fi
-	if test $_pkg_short_errors_supported = yes; then
-		GSTCTRL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED"`
-	else
-		GSTCTRL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED"`
-	fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GSTCTRL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED"`
+        else
+	        GSTCTRL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED"`
+        fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GSTCTRL_PKG_ERRORS" >&5
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-		HAVE_GSTCTRL=no
+                HAVE_GSTCTRL=no
 elif test $pkg_failed = untried; then
 	HAVE_GSTCTRL=no
 else
 	GSTCTRL_CFLAGS=$pkg_cv_GSTCTRL_CFLAGS
 	GSTCTRL_LIBS=$pkg_cv_GSTCTRL_LIBS
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	HAVE_GSTCTRL=yes
 fi
@@ -11378,10 +11337,6 @@ LIBOBJS=$ac_libobjs
 LTLIBOBJS=$ac_ltlibobjs
 
 
-if test -z "${MAINTAINER_MODE_TRUE}" && test -z "${MAINTAINER_MODE_FALSE}"; then
-  as_fn_error "conditional \"MAINTAINER_MODE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
  if test -n "$EXEEXT"; then
   am__EXEEXT_TRUE=
   am__EXEEXT_FALSE='#'
@@ -11390,6 +11345,10 @@ else
   am__EXEEXT_FALSE=
 fi
 
+if test -z "${MAINTAINER_MODE_TRUE}" && test -z "${MAINTAINER_MODE_FALSE}"; then
+  as_fn_error "conditional \"MAINTAINER_MODE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   as_fn_error "conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -11857,13 +11816,13 @@ Usage: $0 [OPTION]... [TAG]...
   -V, --version    print version number and configuration settings, then exit
       --config     print configuration, then exit
   -q, --quiet, --silent
-		   do not print progress messages
+                   do not print progress messages
   -d, --debug      don't remove temporary files
       --recheck    update $as_me by reconfiguring in the same conditions
       --file=FILE[:TEMPLATE]
-		   instantiate the configuration file FILE
+                   instantiate the configuration file FILE
       --header=FILE[:TEMPLATE]
-		   instantiate the configuration header FILE
+                   instantiate the configuration header FILE
 
 Configuration files:
 $config_files
@@ -13498,9 +13457,9 @@ func_stripname ()
 {
   case ${2} in
     .*) func_stripname_result=`$ECHO "X${3}" \
-	   | $Xsed -e "s%^${1}%%" -e "s%\\\\${2}\$%%"`;;
+           | $Xsed -e "s%^${1}%%" -e "s%\\\\${2}\$%%"`;;
     *)  func_stripname_result=`$ECHO "X${3}" \
-	   | $Xsed -e "s%^${1}%%" -e "s%${2}\$%%"`;;
+           | $Xsed -e "s%^${1}%%" -e "s%${2}\$%%"`;;
   esac
 }
 
@@ -13629,4 +13588,5 @@ fi
     fi
   fi
   printf "\n"
+
 
